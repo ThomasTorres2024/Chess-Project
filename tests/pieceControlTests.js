@@ -26,6 +26,8 @@ function testPawn()
         visualizePieceScope(rookPointer);
 }
 
+
+
 //Seems to pass everything
 function testHorse()
 {       //Create a chessboard object 
