@@ -23,10 +23,18 @@ export default class RoundDisplay{
           </li>
         </div>
     */
-    addMoveStringDisplay(movePart, moveIsWhite)
+    addMoveStringDisplay(movePart, moveColor)
     {   
 
-        const roundDocName = "round_record";
+      //this round changer changes the round to the opposite color immediately after moving, so this takes this fact
+      //into account, so the true color is just the other color 
+      let moveIsWhite = true;
+      if(moveColor == "white")
+      {
+        moveIsWhite = black;
+      }
+
+      const roundDocName = "round_record";
         
         //increment round index if the move is white, since any white move will take place at the start 
         if(moveIsWhite)
@@ -34,17 +42,36 @@ export default class RoundDisplay{
             this.roundIndex+=1;
             const roundRecordDoc = document.getElementById(roundDocName);
 
-            //create under last ul elemeent 
+            //create under last ul element, and set its ID
             const newUlID = "move_"+this.roundIndex;
-            const lastUL = document.createElement(`ul id =${newUlID}]$}`);
+            const lastUL = document.createElement("ul")
+            lastUL.id = newUlID;
 
+            //add another node since this white, where we are going to add the digit at the start, 
+            const numberHeading = document.createElement("h4");
+            let numberText = document.createTextNode(this.roundIndex+".");
+
+            //const lastUL = document.createElement(`ul id = "${newUlID}"`);
             //create heading, append text to it with the move part 
             let headingPart = document.createElement("h4");
             let moveText = document.createTextNode(movePart);
-            headingPart.append(moveText)
 
-            //add heading to doc the last UL
+            //node to weigh down the right side 
+            let weightNode = document.createElement("h4");
+            let weightText = document.createTextNode("");
+
+            //apending hierarchy
+            //append text elements first to their respective nodes
+            numberHeading.append(numberText);
+            headingPart.append(moveText);
+            weightNode.append(weightText);
+
+            //white move node 
+            lastUL.append(numberHeading);
             lastUL.append(headingPart);
+            lastUL.append(weightNode);
+
+            roundRecordDoc.append(lastUL);
 
 
             //add the index and the round string part to the doc respectively

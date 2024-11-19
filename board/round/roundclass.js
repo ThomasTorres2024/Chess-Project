@@ -77,7 +77,10 @@ export default class Round{
 
     //Returns string representation of the round.
     toString()
-    {   return this.getPieceFinalPosition()
+    {   
+        const pieceSymbol = this.piece.toString();
+        //return this.getPieceFinalPosition()
+        return pieceSymbol+ this.getPieceFinalPosition();
         //return`${this.getPieceOriginalPosition()} ${this.getPiece().getPiece().toString()} ${this.getPieceFinalPosition()}`;
     }
 

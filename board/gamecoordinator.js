@@ -72,10 +72,8 @@ export default class Coordinator
                 }
                 else
                 {
-                    console.log(oldSquareCoord,newSquareCoord)
-                    this.chessBoardVar.movePiece(oldSquareCoord,newSquareCoord);
-                    //Add a new round to round  manager
-                    this.roundManager.addToRounds(oldSquareCoord,newSquareCoord,this.chessBoardVar.getSquareAt(newSquareCoord))
+                    //Move Piece
+                    this.modifyBoard(oldSquareCoord,newSquareCoord);
                 }
                 console.log(this.chessBoardVar.toString())
                 console.log(this.roundManager.getCurrentRound())
@@ -95,7 +93,10 @@ export default class Coordinator
     {
         this.chessBoardVar.movePiece(oldSquareCoord,newSquareCoord);
         this.roundManager.addToRounds(oldSquareCoord,newSquareCoord,this.chessBoardVar.getSquareAt(newSquareCoord));
-        console.log(this.roundManager.getCurrentRound());
+        const move = this.roundManager.getCurrentRound();
+
+        //adds the move just made to the board, where move is the move string and the round manager is a color corresponding to the color
+        this.roundDisplay.addMoveStringDisplay(move,this.roundManager.getRoundColor())
         //update the display for the rounds on the right side of the page 
 
         //console.log(this.roundManager.getCurrentRound().toString())
