@@ -31,7 +31,7 @@ export default class RoundDisplay{
       let moveIsWhite = true;
       if(moveColor == "white")
       {
-        moveIsWhite = black;
+        moveIsWhite = false;
       }
 
       const roundDocName = "round_record";

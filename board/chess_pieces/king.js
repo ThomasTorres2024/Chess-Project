@@ -199,4 +199,5 @@ export default class King extends ChessPiece{
 
         }
     }
+    
 }

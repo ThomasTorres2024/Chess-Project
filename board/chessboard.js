@@ -8,6 +8,7 @@ import Bishop from "./chess_pieces/bishop.js"
 import King from "./chess_pieces/king.js"
 import Queen from "./chess_pieces/queen.js"
 import Horse from "./chess_pieces/horse.js"
+import Player from "/board/player.js"
 
 export default class ChessBoard
 {
@@ -17,22 +18,34 @@ export default class ChessBoard
         this.file = ["A","B","C","D","E","F","G","H"];
         this.validPieceTypes = ["rook","pawn","horse","bishop","king","queen"]
         this.coordinateMap = new Map();
+
+        this.blackIsChecked = false;
+        this.whiteIsChecked = false; 
+
+        this.blackIsCheckMated = false; 
+        this.whiteIsCheckMated = false;
+
+        this.whitePieces = new Set();
+        this.blackPieces = new Set();
+
         this.setUpBoard();
+        this.setUpPlayerPieces();
         this.graphicsManager=null;
 
         //Set Black King's Rooks
-        let blackKing = this.coordinateMap.get("E8").getPiece();
-        blackKing.setKingSideRook(this.coordinateMap.get("H8"))
-        blackKing.setQueenSideRook(this.coordinateMap.get("A8"))
+        this.blackKing = this.coordinateMap.get("E8").getPiece();
+        this.blackKing.setKingSideRook(this.coordinateMap.get("H8"));
+        this.blackKing.setQueenSideRook(this.coordinateMap.get("A8"));
 
         //Set White King's Rooks 
-        let whiteKing = this.coordinateMap.get("E1").getPiece();
-        blackKing.setKingSideRook(this.coordinateMap.get("H1"))
-        blackKing.setQueenSideRook(this.coordinateMap.get("A1"))
+        this.whiteKing = this.coordinateMap.get("E1").getPiece();
+        this.whiteKing.setKingSideRook(this.coordinateMap.get("H1"));
+        this.whiteKing.setQueenSideRook(this.coordinateMap.get("A1"));
 
+        //set up the 2 players 
+        //this.whitePlayer = Player(true,true,null,[]);
+        //this.blackPlayer = Player(false,true, null, []);
     }
-
-    //Piece 1 Takes Piece 2 
 
     //Pop Piece, the intermediary that the chess board serves here is by going through the hash map to get the board coord instead of
     //just popping it directly  
@@ -58,7 +71,7 @@ export default class ChessBoard
 
         oldPiece.setMoveableSquares([]);
         oldPiece.setTakeableSquares([]);
-
+        //
         //account for irregular moves/piece behavior, like pawns only being able to move 2 squares up once, castling,
         //and en passant
         if (oldPiece.getType() == "pawn")
@@ -82,11 +95,71 @@ export default class ChessBoard
             oldSquare.removePiece();
 
             this.graphicsManager.swapPiece(oldSquare.getBoardCoords(),newSquare.getBoardCoords(),newSquare.getPiece().getImageName());
-
-            //update the position of the piece on the square 
-            let piece = this.getCoordinateMap().get(newSquareCoord).getPiece();
-            piece.setBoardSquare(newSquareCoord.toString());
         }
+
+        //update the position of the piece on the square 
+        let piece = this.getCoordinateMap().get(newSquareCoord).getPiece();
+        if(piece.getColor() == "white")
+        {
+            this.whitePieces.delete(oldSquareCoord);
+            this.whitePieces.add(newSquareCoord);
+        }
+        else
+        {
+            this.blackPieces.delete(oldSquareCoord);
+            this.blackPieces.add(newSquareCoord);
+        }
+        console.log("-----------------------------");
+        piece.setBoardSquare(newSquareCoord.toString());
+        // console.log(this.getCoordinateMap().get(newSquareCoord).getPiece());
+        // console.log(this.whitePieces);
+
+
+        //Determines if there is a check on the board given that the 
+        //piece last moved was a certain color 
+        this.determineCheckOnBoard(oldPiece.getColor());
+    }
+
+    //Sets up the player pieces, adding white pieces to the white sets, and
+    //Adds black pieces to the black set  
+    setUpPlayerPieces()
+    {
+
+        //iterate over squares on the board with pieces 
+        for(let i = 0; i < this.file.length; i++)
+        {      
+            //consists of all of the squares with 
+            let character = this.file[i];
+            let squares = [this.coordinateMap.get(character+(1)),this.coordinateMap.get(character+(2)),
+                this.coordinateMap.get(character+(7)),this.coordinateMap.get(character+(8))
+            ];
+
+            //go through the squares which have pieces when the game starts by default 
+            for(let j = 0; j < squares.length; j++)
+            {
+                let square = squares[j];
+                if(square.getFilled())
+                {   
+                    let piece = square.getPiece();
+                    let piecePosition = piece.getBoardSquare();
+                    
+                    //Add white pieces to white piece section
+                    if(piece.getColor()=="white")
+                    {
+                        this.whitePieces.add(piecePosition);
+                    }
+
+                    //Add black pieces to black piece section
+                    else 
+                    {
+                        this.blackPieces.add(piecePosition);
+                    }
+                }
+            }
+        }
+
+        // console.log(this.whitePieces);
+        // console.log(this.blackPieces);
     }
 
     //Sets up board according to laws of chess 
@@ -135,6 +208,30 @@ export default class ChessBoard
 
     }
 
+   //Returns the black player object
+   getBlackPlayer()
+   {
+       return this.blackPlayer;
+   }
+
+   //Returns the white player player object 
+   getWhitePlayer()
+   {
+       return this.whitePlayer;
+   }  
+
+   //Changes the white player 
+   setWhitePlayer(newPlayer)
+   {
+       this.whitePlayer=newPlayer;
+   }
+
+   //Changes the black player 
+   setBlackPlayer(newPlayer)
+   {
+       this.blackPlayer = newPlayer;
+   }
+
     //Setters
     setGraphicsManager(newGraphicsManager)
     {
@@ -172,7 +269,6 @@ export default class ChessBoard
     }
 
     //Str Method to get str representation of the board for debugging 
-
     getChessBoardArrayWithCoords()
     {   
         let newArray = new Array(8).fill(null).map(() => new Array(8).fill(""));
@@ -225,4 +321,118 @@ export default class ChessBoard
 
         return newArray;
     }
+
+    //The user has 3 operating modes:
+    //The flow of control for how the program will work will consider, on the first round we start at the unchecked mode, and then we move to the 
+    //checked mode as the first thing checked for any given round 
+    //Standard/unchecked 
+    //Checked Mode 
+    //Checkmated 
+
+    //Checking Check Mate Procedure 
+    //Idfc im doing a naive approach here hope to refine it later so im not checking all of the pieces
+    //Loop through all opposing colored pieces, check their takeable squares, add these to a list too of total takeable squares
+    //  Maybe to reduce run time I can have this as some kind of like list that perpetually grows, and I can sort it in some way
+    //  to make search time less ass, order doesn't matter so maybe using a set will make this easier
+    //If the king's square is in any of the pieces scope then the piece is checked, continue going through the rest of the pieces, return true
+    //and the array will be updated
+
+    //Needed to handle this:
+    //Function to manage set's content
+    //Way to efficiently search set/array if it is the same size ig? 
+    //Update board graphics if the king is in check 
+    //Array will be a new parameter for this class with its own getters and setters 
+    //Needs some way to communicate with game coordinator to change game features 
+
+    //Determine if the king is being checked 
+    //Tbh with this solution I don't have an intuitively good way to go about the checking process, 
+    //there are some things I can do to try and reduce the check time, but I think regardless of the type
+    //of move, I will have to brute force check many pieces to see what I can move in an efficient manner.
+    
+
+    //If a piece of white just moved, we want to go through white's pieces, and check
+    //if they intersect with black's king, and if a piece of black just moved, we 
+    //want to check if black's pieces intersect with white's king 
+    /**WORKING HERE */
+    determineCheckOnBoard(color)
+    {   
+
+        //start by getting the white king 
+        let king = this.blackKing;
+        let pieces = this.whitePieces;
+        //check if the king actually was white and then autocorrect if not
+        if(color == "black")
+        {
+            king = this.whiteKing;
+            pieces = this.blackPieces;
+        }
+
+        //get king position of the opposite color 
+        let kingLocation = king.getBoardSquare();
+        for(const value of pieces)
+            {   
+                let piece = this.coordinateMap.get(value).getPiece();
+                piece.defineMoveableAndHittableSquares();
+                let possibleTakes = piece.getTakeableSquares();
+                // console.log(piece);
+                console.log(possibleTakes);
+                //go through the possible places that we can move to, set checked to be true,
+                //and add piece to 
+                for(let i = 0; i < possibleTakes.length; i++)
+                {
+                    if(possibleTakes[i] == kingLocation && color == "white")
+                    {
+                        this.blackIsChecked = true; 
+                        console.log(value);
+                        console.log(piece.toString() + " caused a check");
+                        break;
+                    }
+                    else if (possibleTakes[i] == kingLocation && color == "black")
+                    {
+                        this.whiteIsChecked = true;
+                        console.log(piece.toString() + " caused a check");
+                        break;
+                    }
+                }
+                
+            }
+
+
+        //iterate over pieces under the given color, check their hittable pieces
+        //if the king's position is in the scope of any of these pieces, allow all of the iterations to go through
+
+        //check if the checked king is checkmated 
+
+
+    }
+    
+    getDetermineIfKingIsCheckMated(kingPiece)
+    {
+        //Checks if a king is checkmated
+
+        //Get available movement squares for king
+
+        //Check if any opposing color pieces have these squares within their scope 
+
+        //If the king has no moveable squares then remove them
+    }
+
+    //Returns if the black king is checked 
+    getBlackKingChecked()
+    {
+        return this.blackIsChecked; 
+    }
+
+    //Returns if the white king is checked
+    getWhiteKingChecked()
+    {
+        return this.whiteIsChecked;; 
+    }
+
+    //Determine if the king is check mated 
+    getIsCheckMated()
+    {
+
+    }
+
 }

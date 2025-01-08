@@ -1,3 +1,14 @@
+/**
+ * Still need to add a checking function, the way this will be done is by recalculating every piece's scope
+ * when the round ends for both black and white. 
+ * 
+ * So in the chessboard object, we will have a moveable squares 
+ * Checking function will do a few things
+ * -if checked the icon for the pice checked will be in red like on li chess
+ * -any time a user's mouse input is processed, we will check for the condition of a check first 
+ * and then allow routine game functionality to occur 
+ */
+
 //Game coordinator coordinates all of the pieces to visually represent the game and as well represent
 //the rules of the game 
 
@@ -15,9 +26,21 @@ export default class Coordinator
         this.boardGraphicsManager=boardGraphicsManager;
         this.roundManager=roundManager;
         this.roundDisplay = roundDisplay;
+        this.whiteChecked = false; 
+        this.blackChecked = false;
+        this.whiteCheckMated = false;
+        this.blackCheckMated = false; 
     }
 
-    //Processes a move on the board, this function will be called and used extensively in this program
+    //Processes a move on the board, this function will be called and used extensively in this program.
+    /*
+    Begins by seeing if there is a check on the board, if there is a check processing is changed, 
+    will try to evaluate if the check is a checkmate at first, and if it is not a checkmate, it will allow
+    the player to continue the game. By default the checks are false. The modify board function makes calls to the 
+    chessboard object, in the move piece function there will be another function to make checks,
+    I will also ad a function for the visualization part to ensure a move will not put the player in 
+    check 
+    */
     processSquareMoveinput(pieceCoord)
     {   
 
@@ -25,8 +48,23 @@ export default class Coordinator
         let square=this.chessBoardVar.getSquareAt(pieceCoord);
         let pieceVisualized = this.boardGraphicsManager.getIsVisualized();
         
+        //Display a victory message at the end for now it'll just be a message in console 
+        if(this.blackCheckMated)
+        {
+            console.log("Black wins.");
+        }
+        //White victory message 
+        else if(this.whiteCheckMated)
+        {
+            console.log("White wins.");
+        }
+
+        else if(this.whiteChecked || this.blackChecked)
+        {
+            console.log(this.roundManager.getRoundColor());
+        }
         //a piece is already been displayed, check if the coordinate clicked is 
-        if(pieceVisualized && this.boardGraphicsManager.checkIfMoveableOrTakeable(pieceCoord))
+        else if(pieceVisualized && this.boardGraphicsManager.checkIfMoveableOrTakeable(pieceCoord))
             {   
                 const oldSquareCoord = this.boardGraphicsManager.getHighlightedSquare();
                 let piece = this.chessBoardVar.getSquareAt(oldSquareCoord).getPiece();
@@ -39,8 +77,7 @@ export default class Coordinator
                 {
                     let king = piece; 
                     
-                    //all of this should be managed in a different way
-                    
+                    //Moves the king 
                     //if the king hasn't moved check if move was `castle` move 
                     if(!king.getMoved() && (newSquareCoord[0] == "G" || newSquareCoord == "C"))
                     {   
@@ -65,33 +102,47 @@ export default class Coordinator
 
                         this.castle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare,king,rook);
                     }
+
+                    //Moves king if it has not moved before 
                     else
                     {
                         this.modifyBoard(oldSquareCoord,newSquareCoord);
                     }
                 }
+
+                //Moves piece types which are not kings 
                 else
                 {
                     //Move Piece
                     this.modifyBoard(oldSquareCoord,newSquareCoord);
+
                 }
                 console.log(this.chessBoardVar.toString())
                 console.log(this.roundManager.getCurrentRound())
             }
     
-            //If there is a piece on the square show the usefr where it can go 
-            else if(square.getFilled() && (this.roundManager.getRoundColor() == square.getPiece().getColor()))
-            {
-                const piece = square.getPiece();
-                piece.defineMoveableAndHittableSquares();
-                this.boardGraphicsManager.visualizePieceScope(piece);
-            }
+            //If there is a piece on the square show the userr where it can go 
+        else if(square.getFilled() && (this.roundManager.getRoundColor() == square.getPiece().getColor()))
+        {
+            const piece = square.getPiece();
+            piece.defineMoveableAndHittableSquares();
+            this.boardGraphicsManager.visualizePieceScope(piece);
+        }
     }
 
     //Standard move occurs on the board, takes piece's old square and new square and changes it 
+    //The checking portion is done inside of the chessboard class, and is called when we move a piece,
+    //once it is done executing we update the black and white checked variables
     modifyBoard(oldSquareCoord,newSquareCoord)
     {
         this.chessBoardVar.movePiece(oldSquareCoord,newSquareCoord);
+
+        this.blackChecked=this.chessBoardVar.getBlackKingChecked();
+        this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
+        console.log("Black checked: " + this.blackChecked);
+        console.log("White checked: " + this.whiteChecked);
+
+        //determine if black or white is checked after this move
         this.roundManager.addToRounds(oldSquareCoord,newSquareCoord,this.chessBoardVar.getSquareAt(newSquareCoord));
         const move = this.roundManager.getCurrentRound();
 

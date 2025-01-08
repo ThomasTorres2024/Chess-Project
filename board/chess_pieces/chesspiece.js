@@ -145,7 +145,8 @@ export default class ChessPiece{
     //Outlines what the moveable squares are, and what pieces can be taken.
     defineMoveableAndHittableSquares()
     {   
-         
+        this.moveableSquares = [];
+        this.takeableSquares= []; 
     }
 
     //Returns the chess coordinates of a list of squares which the current piece can be moved to 

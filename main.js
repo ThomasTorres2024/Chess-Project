@@ -32,7 +32,7 @@ function main()
 
         let coordinator = new Coordinator(newChessBoard,boardGraphicsManager,roundManager,roundDisplay);
         
-        //royLopez(coordinator);
+        checkTest(coordinator);
         getUserBoardInput(coordinator); 
 }
 
@@ -44,6 +44,15 @@ function royLopez(coordinator)
         coordinator.modifyBoard("B8","C6");
         coordinator.modifyBoard("F1","B5");  
         coordinator.modifyBoard("D7","D6"); 
+}
+
+
+function checkTest(coordinator)
+{
+        coordinator.modifyBoard("E2","E4"); 
+        coordinator.modifyBoard("E7","E5");      
+        coordinator.modifyBoard("D2","D4");
+        coordinator.modifyBoard("F7","D6");     
 }
 
 
