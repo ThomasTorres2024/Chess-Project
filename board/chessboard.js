@@ -322,6 +322,7 @@ export default class ChessBoard
         return newArray;
     }
 
+
     //The user has 3 operating modes:
     //The flow of control for how the program will work will consider, on the first round we start at the unchecked mode, and then we move to the 
     //checked mode as the first thing checked for any given round 
@@ -353,7 +354,6 @@ export default class ChessBoard
     //If a piece of white just moved, we want to go through white's pieces, and check
     //if they intersect with black's king, and if a piece of black just moved, we 
     //want to check if black's pieces intersect with white's king 
-    /**WORKING HERE */
     determineCheckOnBoard(color)
     {   
 
@@ -370,42 +370,150 @@ export default class ChessBoard
         //get king position of the opposite color 
         let kingLocation = king.getBoardSquare();
         for(const value of pieces)
-            {   
-                let piece = this.coordinateMap.get(value).getPiece();
-                piece.defineMoveableAndHittableSquares();
-                let possibleTakes = piece.getTakeableSquares();
-                // console.log(piece);
-                console.log(possibleTakes);
-                //go through the possible places that we can move to, set checked to be true,
-                //and add piece to 
-                for(let i = 0; i < possibleTakes.length; i++)
+        {   
+            let piece = this.coordinateMap.get(value).getPiece();
+            piece.defineMoveableAndHittableSquares();
+            let possibleTakes = piece.getTakeableSquares();
+            // console.log(piece);
+            console.log(possibleTakes);
+            //go through the possible places that we can move to, set checked to be true,
+            //and add piece to 
+            for(let i = 0; i < possibleTakes.length; i++)
+            {
+                if(possibleTakes[i] == kingLocation && color == "white")
                 {
-                    if(possibleTakes[i] == kingLocation && color == "white")
-                    {
-                        this.blackIsChecked = true; 
-                        console.log(value);
-                        console.log(piece.toString() + " caused a check");
-                        break;
-                    }
-                    else if (possibleTakes[i] == kingLocation && color == "black")
-                    {
-                        this.whiteIsChecked = true;
-                        console.log(piece.toString() + " caused a check");
-                        break;
-                    }
+                    console.log(value);
+                    console.log(piece.toString() + " caused a check");
+                    return false; 
                 }
-                
+                else if (possibleTakes[i] == kingLocation && color == "black")
+                {
+                    console.log(piece.toString() + " caused a check");
+                    return false;
+                }
+            }    
+        }
+        //return true if there are no checks in the position 
+        return true; 
+    }
+
+    /**
+     * Modfies coordinate map with a possible move, and then checks if there is a check on the board by
+     * returning false if there is a check, and true if there is no check then. Undoes the piece move 
+     * instantly 
+     */
+    forecastValidMove(oldSquareCoords,newSquareCoords)
+    {   
+
+        let piece; 
+        let oldSquare = this.coordinateMap.get(oldSquareCoords);
+        let newSquare = this.coordinateMap.get(newSquareCoords);
+        if(oldSquare.getFilled())
+        {
+            //get piece, remove it from square set to the new square 
+            piece=oldSquare.getPiece();
+            let color = piece.getColor();
+
+
+            //Swap values in the set 
+            if(color == "white")
+            {
+                this.whitePieces.add(newSquareCoords);
+                this.whitePieces.delete(oldSquareCoords);
+            }
+            else
+            {
+                this.blackPieces.add(newSquareCoords);
+                this.blackPieces.delete(oldSquareCoords);
+            }
+
+            //swap values on board 
+            oldSquare.removePiece();
+            newSquare.setPiece(piece);
+            this.determineCheckOnBoard(color);
+            
+            //check if the move is now valid 
+            console.log(this.toString());
+
+            //Undo board Swap
+            newSquare.removePiece();
+            oldSquare.setPiece(piece);
+            console.log(this.toString());
+
+            //Undo Set Swap 
+            if(color == "white")
+            {
+                this.whitePieces.add(oldSquareCoords);
+                this.whitePieces.delete(newSquareCoords);
+            }
+            else
+            {
+                this.blackPieces.add(oldSquareCoords);
+                this.blackPieces.delete(newSquareCoords);
             }
 
 
-        //iterate over pieces under the given color, check their hittable pieces
-        //if the king's position is in the scope of any of these pieces, allow all of the iterations to go through
-
-        //check if the checked king is checkmated 
-
+        }
+        else
+        {
+            console.log("ERROR. Attempted to access an empty square: " + oldSquarePiece + ", new square: " + newSquarePiece);
+            return; 
+        }
 
     }
-    
+
+    /**
+     * Takes the color of the attacking piece after a round, and determines if a check 
+     * has been induced on the enemy king 
+     * @param {Color of attacking piece} color 
+     */
+    determineAfterMoveIfPositionHasACheck(color)
+    {
+        let positionHasCheck = this.determineCheckOnBoard(color);
+
+        //if it is white's turn to move, and white is giving a check 
+        if(color == "white" && !positionHasCheck)
+        {
+            this.blackIsChecked=true; 
+        }
+        else if(color == "black" & !positionHasCheck)
+        {
+            this.whiteIsChecked=true;
+        }
+    }
+
+    /**
+     * 
+     * @param {the color of the player's turn} color 
+     * @returns 
+     */
+    determineValidMoves(color)
+    {
+
+        //these contain all of the squares that the checked player can move to 
+        let candidateSquares = new Set();
+
+        //all of the places that the attacking pieces responsible for checking the king control 
+        let controlledSquares = new Set(); 
+        for(let i = 0; i < checkingPieces.length; i++)
+        {
+            let squares = checkingPieces.getMoveableSquares();
+            for(let j = 0; j < squares.length; j++)
+            {
+                controlledSquares.add(square[j]);
+            }
+        }
+        console.log(controlledSquares);
+        let kingPosition = checkedKing.getBoardSquare();
+
+        //Get set of squares which are the union of the attacking pieces and put them in a set
+
+        //Go through the checked player's pieces and check if: 
+        //if king, check if the king can move to any square not controlled in the 
+        
+        return candidateSquares;
+    }
+
     getDetermineIfKingIsCheckMated(kingPiece)
     {
         //Checks if a king is checkmated
