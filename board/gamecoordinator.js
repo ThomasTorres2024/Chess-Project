@@ -61,6 +61,7 @@ export default class Coordinator
 
         else if(this.whiteChecked || this.blackChecked)
         {
+            console.log("A check has ocurred on: ");
             console.log(this.roundManager.getRoundColor());
         }
         //a piece is already been displayed, check if the coordinate clicked is 
@@ -125,7 +126,9 @@ export default class Coordinator
         else if(square.getFilled() && (this.roundManager.getRoundColor() == square.getPiece().getColor()))
         {
             const piece = square.getPiece();
-            piece.defineMoveableAndHittableSquares();
+            console.log(piece);
+            //UNCOMMENT FOR NORMAL FUNCTIONALITY 
+            //piece.defineMoveableAndHittableSquares();
             this.boardGraphicsManager.visualizePieceScope(piece);
         }
     }
@@ -142,17 +145,22 @@ export default class Coordinator
         console.log("Black checked: " + this.blackChecked);
         console.log("White checked: " + this.whiteChecked);
 
+
         //determine if black or white is checked after this move
         this.roundManager.addToRounds(oldSquareCoord,newSquareCoord,this.chessBoardVar.getSquareAt(newSquareCoord));
         const move = this.roundManager.getCurrentRound();
 
+        console.log(move);
+        console.log(this.roundManager.getRoundColor());
+
         //adds the move just made to the board, where move is the move string and the round manager is a color corresponding to the color
         this.roundDisplay.addMoveStringDisplay(move,this.roundManager.getRoundColor())
-        //update the display for the rounds on the right side of the page 
+        
+        //COMMENT OUT FOR NORMAL FUNCTIONALITY
+        //update what moves can be made for the next player and check status 
+        let roundColor = this.chessBoardVar.getSquareAt(newSquareCoord).getPiece().getColor();
+        this.chessBoardVar.postRound(roundColor);
 
-        //console.log(this.roundManager.getCurrentRound().toString())
-
-      //  this.roundDisplay.addMoveStringDisplay()
 
         
     }

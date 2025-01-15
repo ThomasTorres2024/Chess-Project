@@ -45,6 +45,9 @@ export default class ChessBoard
         //set up the 2 players 
         //this.whitePlayer = Player(true,true,null,[]);
         //this.blackPlayer = Player(false,true, null, []);
+        this.foreCastAllValidMoves("white");
+        console.log(this.coordinateMap.get("A2").getPiece().getMoveableSquares());
+        console.log(this.coordinateMap.get("B2").getPiece().getMoveableSquares());
     }
 
     //Pop Piece, the intermediary that the chess board serves here is by going through the hash map to get the board coord instead of
@@ -69,8 +72,6 @@ export default class ChessBoard
         let oldSquare = this.getCoordinateMap().get(oldSquareCoord);
         let oldPiece = this.getSquareAt(oldSquareCoord).getPiece();
 
-        oldPiece.setMoveableSquares([]);
-        oldPiece.setTakeableSquares([]);
         //
         //account for irregular moves/piece behavior, like pawns only being able to move 2 squares up once, castling,
         //and en passant
@@ -113,11 +114,37 @@ export default class ChessBoard
         piece.setBoardSquare(newSquareCoord.toString());
         // console.log(this.getCoordinateMap().get(newSquareCoord).getPiece());
         // console.log(this.whitePieces);
+    }
 
+    /**
+     * Called after each round in order to determine if any checks, checkmates, or stalemates occurs, and checks what moves
+     * are available 
+     */
+    postRound(colorPreviousMove)
+    {   
+        //check if the previous player was checked
+        this.determineAfterMoveIfPositionHasACheck(colorPreviousMove);  
 
-        //Determines if there is a check on the board given that the 
-        //piece last moved was a certain color 
-        this.determineCheckOnBoard(oldPiece.getColor());
+        //get valid moves for all pieces of a certain color 
+        if(colorPreviousMove == "white")
+        {
+            this.foreCastAllValidMoves("black");
+        }
+        else
+        {
+            this.foreCastAllValidMoves("white");
+        }
+
+        //if the piece is checked 
+        if(this.blackIsChecked)
+        {
+            console.log("Black is checked, under construction");
+        }
+        else if(this.whiteIsChecked)
+        {
+            console.log("White is checked under construction");
+        }
+        
     }
 
     //Sets up the player pieces, adding white pieces to the white sets, and
@@ -375,26 +402,98 @@ export default class ChessBoard
             piece.defineMoveableAndHittableSquares();
             let possibleTakes = piece.getTakeableSquares();
             // console.log(piece);
-            console.log(possibleTakes);
+            //console.log(possibleTakes);
             //go through the possible places that we can move to, set checked to be true,
             //and add piece to 
             for(let i = 0; i < possibleTakes.length; i++)
-            {
+            {   
+                //when white checks a black piece 
                 if(possibleTakes[i] == kingLocation && color == "white")
                 {
-                    console.log(value);
-                    console.log(piece.toString() + " caused a check");
-                    return false; 
+                    //console.log(value);
+                    //console.log(piece.toString() + " caused a check");
+                    return 0; 
                 }
+                //when black checks a white piece 
                 else if (possibleTakes[i] == kingLocation && color == "black")
                 {
-                    console.log(piece.toString() + " caused a check");
-                    return false;
+                    //console.log(piece.toString() + " caused a check");
+                    return 1;
                 }
             }    
         }
-        //return true if there are no checks in the position 
-        return true; 
+        //return -1 if nothing happens
+        return -1; 
+    }
+
+
+    /**
+     * Forecast all valid moves for given color 
+     */
+    foreCastAllValidMoves(color)
+    {
+        //iterate through the respective set, clone sets since the checking function for the pieces 
+        //relies upon making moves  
+        let playerSet; 
+        if(color == "white")
+        {
+            playerSet= new Set(this.whitePieces);
+        }
+        else
+        {
+            playerSet= new Set(this.blackPieces);
+        }
+
+        for(const pieceCoord of playerSet)
+        {
+            //console.log(pieceCoord);
+            const square = this.coordinateMap.get(pieceCoord)
+            if(square.getFilled())
+            {
+                //get piece if the square is filled
+                const piece = square.getPiece();
+                console.log(square);
+                console.log(piece);
+                //Determine what squares the piece can access
+                //The function of each chesspiece class calls the evaluate move
+                //Function  
+                piece.defineMoveableAndHittableSquares();
+                const possibleMoves = piece.getMoveableSquares();
+                const possibleTakes = piece.getTakeableSquares();
+                let newPossibleMoves = [];
+                let newTakeableMoves = [];
+                let firstSquare = pieceCoord;
+                for(let i = 0; i < possibleMoves.length; i++)
+                {   
+                    let newSquare = possibleMoves[i];
+                    this.evaluateMove(firstSquare,newSquare,newPossibleMoves);
+                    // if(this.forecastValidMove(firstSquare,newSquare))
+                    // {
+                    //     newPossibleMoves.push(newSquare);
+                    // }
+                }
+                for(let j = 0; j < possibleTakes.length; j++)
+                {
+                    let newSquare=possibleTakes[j];
+                    this.evaluateMove(firstSquare,newSquare,newPossibleMoves);
+                }
+
+                //Now that any moves which cause checks have been removed, this implies that we have a check 
+                piece.setMoveableSquares(newPossibleMoves);
+                piece.setTakeableSquares(newTakeableMoves);
+                console.log("-------------------------");
+                console.log(piece)
+                console.log(piece.getMoveableSquares());
+                console.log(piece.getTakeableSquares());
+                console.log("--------------------------");
+            }
+            else
+            {
+                console.log("ERROR. Tried to check the scope of a piece, " + square + " when there is no piece located at the square. ");
+                console.log(pieceCoord);
+                break;
+            }
+        }
     }
 
     /**
@@ -402,7 +501,7 @@ export default class ChessBoard
      * returning false if there is a check, and true if there is no check then. Undoes the piece move 
      * instantly 
      */
-    forecastValidMove(oldSquareCoords,newSquareCoords)
+    evaluateMove(oldSquareCoords,newSquareCoords, possibleSquare)
     {   
 
         let piece; 
@@ -430,33 +529,36 @@ export default class ChessBoard
             //swap values on board 
             oldSquare.removePiece();
             newSquare.setPiece(piece);
-            this.determineCheckOnBoard(color);
-            
-            //check if the move is now valid 
-            console.log(this.toString());
-
+            let res = this.determineCheckOnBoard(color);
             //Undo board Swap
             newSquare.removePiece();
             oldSquare.setPiece(piece);
-            console.log(this.toString());
+            // console.log(this.toString());
 
-            //Undo Set Swap 
+            //Undo Set Swap, if  
             if(color == "white")
             {
                 this.whitePieces.add(oldSquareCoords);
                 this.whitePieces.delete(newSquareCoords);
+                if(res != 1)
+                {
+                    possibleSquare.push(newSquareCoords);  
+                }
             }
             else
-            {
+            {   
                 this.blackPieces.add(oldSquareCoords);
                 this.blackPieces.delete(newSquareCoords);
+                if(res!=0)
+                {
+                    possibleSquare.push(newSquareCoords);
+                }
             }
-
 
         }
         else
         {
-            console.log("ERROR. Attempted to access an empty square: " + oldSquarePiece + ", new square: " + newSquarePiece);
+            console.log("ERROR. Attempted to access an empty square: " + oldSquareCoords + ", new square: " + newSquareCoords);
             return; 
         }
 
@@ -468,17 +570,27 @@ export default class ChessBoard
      * @param {Color of attacking piece} color 
      */
     determineAfterMoveIfPositionHasACheck(color)
-    {
-        let positionHasCheck = this.determineCheckOnBoard(color);
+    {   
+        /*Function results in 0--> Black Check, 1 --> White Check, -1 No Changes on the board and 
+        handles accordingly
+        */
+        let positionResult = this.determineCheckOnBoard(color);
 
-        //if it is white's turn to move, and white is giving a check 
-        if(color == "white" && !positionHasCheck)
+        switch(positionResult)
         {
-            this.blackIsChecked=true; 
-        }
-        else if(color == "black" & !positionHasCheck)
-        {
-            this.whiteIsChecked=true;
+            case 1:
+                console.log("White is checked");
+                this.whiteIsChecked=true;
+                break; 
+            case 0:
+                console.log("Black is checked.");
+                this.blackIsChecked=true;
+                break; 
+            case -1: 
+                console.log("No check,");
+                this.blackIsChecked=false;
+                this.whiteIsChecked=false;
+                break; 
         }
     }
 

@@ -87,7 +87,7 @@ function iterateUpwardRight(squareIterated,board,piece,fileOfPiece,rankOfPiece,f
     //check bounds so that ord(filel) < 72 and that rank < 9. 
     if(fileIterative > 72 || rankIterative > 8)
     {
-        //temporary return until i can work the rest of this
+        //recursive case 
         iterateUpwardRight(board.getSquareAt(String.fromCharCode(fileOfPiece-1)+(rankOfPiece-1)),board,piece,fileOfPiece,rankOfPiece,fileOfPiece-1,rankOfPiece-1,moveableList,takeableList);
     }
 
@@ -102,16 +102,18 @@ function iterateUpwardRight(squareIterated,board,piece,fileOfPiece,rankOfPiece,f
             }
             iterateUpwardRight(board.getSquareAt(String.fromCharCode(fileOfPiece-1)+(rankOfPiece-1)),board,piece,fileOfPiece,rankOfPiece,fileOfPiece-1,rankOfPiece-1,moveableList,takeableList);
         }
+        //Board evaluate move function checks if the move to this square will induce a check on the player making move, if such a 
+        //move is made, then the square will not be added to the function 
         else
         {
             moveableList.push(String.fromCharCode(fileIterative)+rankIterative);
             iterateUpwardRight(board.getSquareAt(String.fromCharCode(fileIterative+1)+(rankIterative+1)),board,piece,fileOfPiece,rankOfPiece,fileIterative+1,rankIterative+1,moveableList,takeableList);
         }
     }
-    //if the iterative square reaches the lower border
+    //if the iterative square reaches the lower border, base case 
     else if(fileIterative < 65 || rankIterative < 1)
     {
-        return
+        return;
     }
 
     //the last condition si the result is biunded between for the file [a,file present] and [1,file present], so i can go -1 on both

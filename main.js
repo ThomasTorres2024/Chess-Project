@@ -27,19 +27,12 @@ function main()
         let roundManager = new RoundManager(newChessBoard);
         let roundDisplay = new RoundDisplay(roundManager);
         newChessBoard.setGraphicsManager(boardGraphicsManager);
-        newChessBoard.setUpBoard();
         console.log(newChessBoard.toString());
-        checkForeCast(newChessBoard);
 
         let coordinator = new Coordinator(newChessBoard,boardGraphicsManager,roundManager,roundDisplay);
         
         //checkTest(coordinator);
         getUserBoardInput(coordinator); 
-}
-
-function checkForeCast(board)
-{
-        board.forecastValidMove("E2","E4")
 }
 
 function royLopez(coordinator)

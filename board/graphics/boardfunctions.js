@@ -76,6 +76,10 @@ class BoardGraphicsManager
             this.devisualizePiece();    
         }
 
+        console.log(piece);
+        console.log(piece.getMoveableSquares());
+        console.log(piece.getTakeableSquares());
+
         this.setHighlightedSquare(piece.getBoardSquare())
         this.setVisualizedMoveableSquares(piece.getMoveableSquares());
         this.setVisualizedTakeableSquares(piece.getTakeableSquares());
