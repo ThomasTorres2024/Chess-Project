@@ -150,6 +150,17 @@ export default class ChessPiece{
         this.takeableSquares= []; 
     }
 
+    /**
+     * Function calls the define moveable and hittable function giving the lists of movebale 
+     * and hittable squares, and then sees which of these moves will cause a check on the boardm
+     * and which of these moves will cause 
+     */
+    defineValidMoveableAndTakeable()
+    {
+
+    }
+
+
     //Returns the chess coordinates of a list of squares which the current piece can be moved to 
     getMoveableSquares()
     {

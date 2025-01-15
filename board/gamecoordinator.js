@@ -59,11 +59,12 @@ export default class Coordinator
             console.log("White wins.");
         }
 
-        else if(this.whiteChecked || this.blackChecked)
-        {
-            console.log("A check has ocurred on: ");
-            console.log(this.roundManager.getRoundColor());
-        }
+        //Return to this part later comment out for now 
+        // else if(this.whiteChecked || this.blackChecked)
+        // {
+        //     console.log("A check has ocurred on: ");
+        //     console.log(this.roundManager.getRoundColor());
+        // }
         //a piece is already been displayed, check if the coordinate clicked is 
         else if(pieceVisualized && this.boardGraphicsManager.checkIfMoveableOrTakeable(pieceCoord))
             {   
@@ -126,7 +127,7 @@ export default class Coordinator
         else if(square.getFilled() && (this.roundManager.getRoundColor() == square.getPiece().getColor()))
         {
             const piece = square.getPiece();
-            console.log(piece);
+            //console.log(piece);
             //UNCOMMENT FOR NORMAL FUNCTIONALITY 
             //piece.defineMoveableAndHittableSquares();
             this.boardGraphicsManager.visualizePieceScope(piece);
@@ -140,18 +141,9 @@ export default class Coordinator
     {
         this.chessBoardVar.movePiece(oldSquareCoord,newSquareCoord);
 
-        this.blackChecked=this.chessBoardVar.getBlackKingChecked();
-        this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
-        console.log("Black checked: " + this.blackChecked);
-        console.log("White checked: " + this.whiteChecked);
-
-
         //determine if black or white is checked after this move
         this.roundManager.addToRounds(oldSquareCoord,newSquareCoord,this.chessBoardVar.getSquareAt(newSquareCoord));
         const move = this.roundManager.getCurrentRound();
-
-        console.log(move);
-        console.log(this.roundManager.getRoundColor());
 
         //adds the move just made to the board, where move is the move string and the round manager is a color corresponding to the color
         this.roundDisplay.addMoveStringDisplay(move,this.roundManager.getRoundColor())
@@ -160,6 +152,11 @@ export default class Coordinator
         //update what moves can be made for the next player and check status 
         let roundColor = this.chessBoardVar.getSquareAt(newSquareCoord).getPiece().getColor();
         this.chessBoardVar.postRound(roundColor);
+
+        this.blackChecked=this.chessBoardVar.getBlackKingChecked();
+        this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
+        console.log("Black checked: " + this.blackChecked);
+        console.log("White checked: " + this.whiteChecked);
 
 
         

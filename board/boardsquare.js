@@ -57,7 +57,7 @@ export default class BoardSquare
     //Setters
     setPiece(newPiece)
     {   
-        if (newPiece != null)
+        if(newPiece != null)
         {   
             this.piece=newPiece;
 
@@ -66,6 +66,11 @@ export default class BoardSquare
                 {
                     this.filled = true;
                 }
+        }
+        else
+        {
+            this.piece=null; 
+            this.filled = false; 
         }
 
     }

@@ -70,7 +70,6 @@ export default class Pawn extends ChessPiece{
         {
             candidatesMoveble.push(unmovedAhead);
         }
-
         function pawnMoveAbility(piece,pointList,moveableSquares)
         {
             for(let i = 0; i<pointList.length;i++)
@@ -82,11 +81,13 @@ export default class Pawn extends ChessPiece{
                     if ((file < 73 && file >64) && (rank>0 && rank <9))
                     {   
                         let squareIterative  = piece.getBoard().getSquareAt(String.fromCharCode(file)+rank);
-                    
-                        if(!squareIterative.getFilled())
-                        {   
-                            moveableSquares.push(String.fromCharCode(file)+rank);
+                        if(squareIterative.getFilled())
+                        {   break;
                         }  
+                        else
+                        {
+                            moveableSquares.push(String.fromCharCode(file)+rank); 
+                        }
     
                     }
                 }
@@ -119,6 +120,5 @@ export default class Pawn extends ChessPiece{
         
         pawnTakeableEvaluation(this,candidatesTakeable,takeableSquares)
         pawnMoveAbility(this,candidatesMoveble,moveableSquares)
-
     }
 }

@@ -168,9 +168,6 @@ export default class King extends ChessPiece{
 
                 for(let j = 0; j<iterated.length;j++ )
                 {   
-                    
-                    console.log(iterated[j]+rank);
-
                     //get the square, check if the square is filled, if it is silled then do not cocatenate the sets 
                     let square = this.getBoard().getSquareAt(iterated[j]+rank);
                     if(square.getFilled())

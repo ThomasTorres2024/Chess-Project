@@ -46,8 +46,6 @@ export default class ChessBoard
         //this.whitePlayer = Player(true,true,null,[]);
         //this.blackPlayer = Player(false,true, null, []);
         this.foreCastAllValidMoves("white");
-        console.log(this.coordinateMap.get("A2").getPiece().getMoveableSquares());
-        console.log(this.coordinateMap.get("B2").getPiece().getMoveableSquares());
     }
 
     //Pop Piece, the intermediary that the chess board serves here is by going through the hash map to get the board coord instead of
@@ -98,6 +96,7 @@ export default class ChessBoard
             this.graphicsManager.swapPiece(oldSquare.getBoardCoords(),newSquare.getBoardCoords(),newSquare.getPiece().getImageName());
         }
 
+
         //update the position of the piece on the square 
         let piece = this.getCoordinateMap().get(newSquareCoord).getPiece();
         if(piece.getColor() == "white")
@@ -110,6 +109,7 @@ export default class ChessBoard
             this.blackPieces.delete(oldSquareCoord);
             this.blackPieces.add(newSquareCoord);
         }
+
         console.log("-----------------------------");
         piece.setBoardSquare(newSquareCoord.toString());
         // console.log(this.getCoordinateMap().get(newSquareCoord).getPiece());
@@ -122,8 +122,11 @@ export default class ChessBoard
      */
     postRound(colorPreviousMove)
     {   
+        //define the scope for each piece after a move has been made, this is necessary to see what scare are being hit  
+        this.foreCastAllValidMoves(colorPreviousMove); 
+
         //check if the previous player was checked
-        this.determineAfterMoveIfPositionHasACheck(colorPreviousMove);  
+        this.determineAfterMoveIfPositionHasACheck(colorPreviousMove); 
 
         //get valid moves for all pieces of a certain color 
         if(colorPreviousMove == "white")
@@ -399,7 +402,7 @@ export default class ChessBoard
         for(const value of pieces)
         {   
             let piece = this.coordinateMap.get(value).getPiece();
-            piece.defineMoveableAndHittableSquares();
+            //piece.defineMoveableAndHittableSquares();
             let possibleTakes = piece.getTakeableSquares();
             // console.log(piece);
             //console.log(possibleTakes);
@@ -428,7 +431,8 @@ export default class ChessBoard
 
 
     /**
-     * Forecast all valid moves for given color 
+     * Forecast all valid moves for given color. Takes all pieces a color owns, and then checks their scope, takes the moves which do not
+     * cause a check on the same color, and adds them to their list of moveable and takeable pieces respectively. 
      */
     foreCastAllValidMoves(color)
     {
@@ -438,54 +442,51 @@ export default class ChessBoard
         if(color == "white")
         {
             playerSet= new Set(this.whitePieces);
+            console.log("White");
         }
         else
         {
             playerSet= new Set(this.blackPieces);
+            console.log("Black:")
         }
 
         for(const pieceCoord of playerSet)
         {
             //console.log(pieceCoord);
             const square = this.coordinateMap.get(pieceCoord)
+
+            //Check to only process only squares that have pieces  
             if(square.getFilled())
             {
                 //get piece if the square is filled
                 const piece = square.getPiece();
-                console.log(square);
-                console.log(piece);
                 //Determine what squares the piece can access
-                //The function of each chesspiece class calls the evaluate move
-                //Function  
+                //Get the totality of places the square can go 
                 piece.defineMoveableAndHittableSquares();
                 const possibleMoves = piece.getMoveableSquares();
                 const possibleTakes = piece.getTakeableSquares();
                 let newPossibleMoves = [];
                 let newTakeableMoves = [];
                 let firstSquare = pieceCoord;
+
+                //go through all of the possible moves and posisble takes, this will append elements
+                //to the possible moves and takeable moves functions 
                 for(let i = 0; i < possibleMoves.length; i++)
                 {   
                     let newSquare = possibleMoves[i];
                     this.evaluateMove(firstSquare,newSquare,newPossibleMoves);
-                    // if(this.forecastValidMove(firstSquare,newSquare))
-                    // {
-                    //     newPossibleMoves.push(newSquare);
-                    // }
                 }
                 for(let j = 0; j < possibleTakes.length; j++)
                 {
                     let newSquare=possibleTakes[j];
-                    this.evaluateMove(firstSquare,newSquare,newPossibleMoves);
+                    this.evaluateMove(firstSquare,newSquare,newTakeableMoves);
                 }
+
+                console.log("------------------------------")
 
                 //Now that any moves which cause checks have been removed, this implies that we have a check 
                 piece.setMoveableSquares(newPossibleMoves);
                 piece.setTakeableSquares(newTakeableMoves);
-                console.log("-------------------------");
-                console.log(piece)
-                console.log(piece.getMoveableSquares());
-                console.log(piece.getTakeableSquares());
-                console.log("--------------------------");
             }
             else
             {
@@ -503,16 +504,17 @@ export default class ChessBoard
      */
     evaluateMove(oldSquareCoords,newSquareCoords, possibleSquare)
     {   
-
         let piece; 
+        let newSquarePiece;
         let oldSquare = this.coordinateMap.get(oldSquareCoords);
         let newSquare = this.coordinateMap.get(newSquareCoords);
+
         if(oldSquare.getFilled())
         {
             //get piece, remove it from square set to the new square 
             piece=oldSquare.getPiece();
+            newSquarePiece=newSquare.getPiece();
             let color = piece.getColor();
-
 
             //Swap values in the set 
             if(color == "white")
@@ -530,10 +532,12 @@ export default class ChessBoard
             oldSquare.removePiece();
             newSquare.setPiece(piece);
             let res = this.determineCheckOnBoard(color);
+            console.log(res);
+            console.log(color);
+
             //Undo board Swap
-            newSquare.removePiece();
+            newSquare.setPiece(newSquarePiece);
             oldSquare.setPiece(piece);
-            // console.log(this.toString());
 
             //Undo Set Swap, if  
             if(color == "white")
@@ -615,7 +619,7 @@ export default class ChessBoard
                 controlledSquares.add(square[j]);
             }
         }
-        console.log(controlledSquares);
+        //console.log(controlledSquares);
         let kingPosition = checkedKing.getBoardSquare();
 
         //Get set of squares which are the union of the attacking pieces and put them in a set
