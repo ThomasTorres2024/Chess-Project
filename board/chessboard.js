@@ -103,11 +103,13 @@ export default class ChessBoard
         {
             this.whitePieces.delete(oldSquareCoord);
             this.whitePieces.add(newSquareCoord);
+            this.blackPieces.delete(newSquareCoord);
         }
         else
         {
             this.blackPieces.delete(oldSquareCoord);
             this.blackPieces.add(newSquareCoord);
+            this.whitePieces.delete(newSquareCoord);
         }
 
         console.log("-----------------------------");
@@ -402,7 +404,7 @@ export default class ChessBoard
         for(const value of pieces)
         {   
             let piece = this.coordinateMap.get(value).getPiece();
-            //piece.defineMoveableAndHittableSquares();
+            piece.defineMoveableAndHittableSquares();
             let possibleTakes = piece.getTakeableSquares();
             // console.log(piece);
             //console.log(possibleTakes);
@@ -442,12 +444,10 @@ export default class ChessBoard
         if(color == "white")
         {
             playerSet= new Set(this.whitePieces);
-            console.log("White");
         }
         else
         {
             playerSet= new Set(this.blackPieces);
-            console.log("Black:")
         }
 
         for(const pieceCoord of playerSet)
@@ -482,7 +482,6 @@ export default class ChessBoard
                     this.evaluateMove(firstSquare,newSquare,newTakeableMoves);
                 }
 
-                console.log("------------------------------")
 
                 //Now that any moves which cause checks have been removed, this implies that we have a check 
                 piece.setMoveableSquares(newPossibleMoves);
@@ -515,25 +514,26 @@ export default class ChessBoard
             piece=oldSquare.getPiece();
             newSquarePiece=newSquare.getPiece();
             let color = piece.getColor();
+            let attackingColor;
 
             //Swap values in the set 
             if(color == "white")
             {
                 this.whitePieces.add(newSquareCoords);
                 this.whitePieces.delete(oldSquareCoords);
+                attackingColor = "black";
             }
             else
             {
                 this.blackPieces.add(newSquareCoords);
                 this.blackPieces.delete(oldSquareCoords);
+                attackingColor = "white";
             }
 
             //swap values on board 
             oldSquare.removePiece();
             newSquare.setPiece(piece);
-            let res = this.determineCheckOnBoard(color);
-            console.log(res);
-            console.log(color);
+            let res = this.determineCheckOnBoard(attackingColor);
 
             //Undo board Swap
             newSquare.setPiece(newSquarePiece);
