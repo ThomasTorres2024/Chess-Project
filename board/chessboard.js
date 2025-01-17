@@ -28,6 +28,9 @@ export default class ChessBoard
         this.whitePieces = new Set();
         this.blackPieces = new Set();
 
+        this.whiteMoveableQuantity = 0; 
+        this.blackMoveableQuantity = 0; 
+
         this.setUpBoard();
         this.setUpPlayerPieces();
         this.graphicsManager=null;
@@ -88,6 +91,10 @@ export default class ChessBoard
         if (oldSquare.getFilled())
         {
             let newSquare = this.getCoordinateMap().get(newSquareCoord);
+            if(newSquare.getPiece())
+            {
+                newSquare.getPiece().setTaken(true);
+            }
 
             //set piece from old square on new and remove piece on old square
             newSquare.setPiece(oldSquare.getPiece());
@@ -124,6 +131,9 @@ export default class ChessBoard
      */
     postRound(colorPreviousMove)
     {   
+        this.whiteMoveableQuantity=0;
+        this.blackMoveableQuantity=0;
+
         //define the scope for each piece after a move has been made, this is necessary to see what scare are being hit  
         this.foreCastAllValidMoves(colorPreviousMove); 
 
@@ -140,13 +150,18 @@ export default class ChessBoard
             this.foreCastAllValidMoves("white");
         }
 
+        console.log(this.whiteMoveableQuantity);
+        console.log(this.blackMoveableQuantity);
+
         //if the piece is checked 
-        if(this.blackIsChecked)
-        {
+        if(this.blackIsChecked && this.blackMoveableQuantity == 0)
+        {   
+            this.blackIsCheckMated=true;
             console.log("Black is checked, under construction");
         }
-        else if(this.whiteIsChecked)
-        {
+        else if(this.whiteIsChecked && this.whiteMoveableQuantity ==0)
+        {   
+            this.whiteIsCheckMated=true;
             console.log("White is checked under construction");
         }
         
@@ -399,6 +414,17 @@ export default class ChessBoard
             pieces = this.blackPieces;
         }
 
+        //Means the king has been taken this way, black check 
+        if(this.whiteKing.getTaken())
+        {
+            return 1; 
+        }
+        //Means that the king has been taken this way white check
+        else if(this.blackKing.getTaken())
+        {
+            return 0; 
+        }
+
         //get king position of the opposite color 
         let kingLocation = king.getBoardSquare();
         for(const value of pieces)
@@ -406,6 +432,12 @@ export default class ChessBoard
             let piece = this.coordinateMap.get(value).getPiece();
             piece.defineMoveableAndHittableSquares();
             let possibleTakes = piece.getTakeableSquares();
+            if(piece.getType() != "pawn")
+            {
+                possibleTakes=possibleTakes.concat(piece.getMoveableSquares());
+            }
+
+            //console.log(possibleTakes)
             // console.log(piece);
             //console.log(possibleTakes);
             //go through the possible places that we can move to, set checked to be true,
@@ -513,6 +545,13 @@ export default class ChessBoard
             //get piece, remove it from square set to the new square 
             piece=oldSquare.getPiece();
             newSquarePiece=newSquare.getPiece();
+
+            //Set taken on piece since we are going to remove iff there's a piece on the square 
+            if(newSquarePiece)
+            {
+                newSquarePiece.setTaken(true);
+            }
+
             let color = piece.getColor();
             let attackingColor;
 
@@ -531,13 +570,21 @@ export default class ChessBoard
             }
 
             //swap values on board 
+            piece.setBoardSquare(newSquareCoords);
             oldSquare.removePiece();
             newSquare.setPiece(piece);
             let res = this.determineCheckOnBoard(attackingColor);
 
+            if(newSquarePiece)
+            {
+                newSquarePiece.setTaken(false);
+            }
+
+
             //Undo board Swap
             newSquare.setPiece(newSquarePiece);
             oldSquare.setPiece(piece);
+            piece.setBoardSquare(oldSquareCoords);
 
             //Undo Set Swap, if  
             if(color == "white")
@@ -546,6 +593,7 @@ export default class ChessBoard
                 this.whitePieces.delete(newSquareCoords);
                 if(res != 1)
                 {
+                    this.whiteMoveableQuantity+=1;
                     possibleSquare.push(newSquareCoords);  
                 }
             }
@@ -554,7 +602,8 @@ export default class ChessBoard
                 this.blackPieces.add(oldSquareCoords);
                 this.blackPieces.delete(newSquareCoords);
                 if(res!=0)
-                {
+                {   
+                    this.blackMoveableQuantity+=1;
                     possibleSquare.push(newSquareCoords);
                 }
             }
@@ -650,13 +699,24 @@ export default class ChessBoard
     //Returns if the white king is checked
     getWhiteKingChecked()
     {
-        return this.whiteIsChecked;; 
+        return this.whiteIsChecked;
     }
 
-    //Determine if the king is check mated 
-    getIsCheckMated()
+    /**
+     * Returns if white has been checkmated
+     * @returns Returns if White has Been Checkmated
+     */
+    getWhiteCheckMated()
     {
-
+        return this.whiteIsCheckMated;
     }
-
+    
+    /**
+     * If black has been checkmated
+     * @returns If Black has been checkmated
+     */
+    getBlackCheckMated()
+    {
+        return this.blackIsCheckMated;
+    }
 }

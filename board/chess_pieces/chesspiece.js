@@ -12,6 +12,8 @@ export default class ChessPiece{
         this.board = board 
         this.setColor(color);
 
+        this.taken=false; 
+
         //by default set chars to be none just in case, to be modified in child
         //classes 
         this.blackChar="b"
@@ -141,7 +143,25 @@ export default class ChessPiece{
         }
         
     }
-    
+    /**
+     * Returns if the piece has been taken, and should no longer be accesed 
+     * @returns if piece has been taken 
+     */
+    getTaken()
+    {
+        return this.taken
+    }
+
+    /**
+     * Changes if the piece has been taken or not taken 
+     * @param {New boolean value for Taken} newTaken 
+     */
+    setTaken(newTaken)
+    {
+        this.taken = newTaken;
+    }
+
+
     //Outlines what the moveable squares are, and what pieces can be taken.
     defineMoveableAndHittableSquares()
     {   

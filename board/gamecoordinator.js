@@ -51,12 +51,12 @@ export default class Coordinator
         //Display a victory message at the end for now it'll just be a message in console 
         if(this.blackCheckMated)
         {
-            console.log("Black wins.");
+            console.log("White wins.");
         }
         //White victory message 
         else if(this.whiteCheckMated)
         {
-            console.log("White wins.");
+            console.log("Black wins.");
         }
 
         //Return to this part later comment out for now 
@@ -154,6 +154,8 @@ export default class Coordinator
         this.chessBoardVar.postRound(roundColor);
 
         this.blackChecked=this.chessBoardVar.getBlackKingChecked();
+        this.blackCheckMated=this.chessBoardVar.getBlackCheckMated();
+        this.whiteCheckMated=this.chessBoardVar.getWhiteCheckMated();
         this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
         console.log("Black checked: " + this.blackChecked);
         console.log("White checked: " + this.whiteChecked);

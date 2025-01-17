@@ -1,3 +1,3 @@
 List of Bugs to Fix:
 -Black Castling Gives 2 Rounds 
--Method to prevent checks on player doesn't prevent any checks from happening and swaps the check 
+-King cannot take pieces that check it that are not attached to itself
