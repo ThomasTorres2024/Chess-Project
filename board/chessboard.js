@@ -37,13 +37,13 @@ export default class ChessBoard
 
         //Set Black King's Rooks
         this.blackKing = this.coordinateMap.get("E8").getPiece();
-        this.blackKing.setKingSideRook(this.coordinateMap.get("H8"));
-        this.blackKing.setQueenSideRook(this.coordinateMap.get("A8"));
+        this.blackKing.setKingSideRook(this.coordinateMap.get("H8").getPiece());
+        this.blackKing.setQueenSideRook(this.coordinateMap.get("A8").getPiece());
 
         //Set White King's Rooks 
         this.whiteKing = this.coordinateMap.get("E1").getPiece();
-        this.whiteKing.setKingSideRook(this.coordinateMap.get("H1"));
-        this.whiteKing.setQueenSideRook(this.coordinateMap.get("A1"));
+        this.whiteKing.setKingSideRook(this.coordinateMap.get("H1").getPiece());
+        this.whiteKing.setQueenSideRook(this.coordinateMap.get("A1").getPiece());
 
         //set up the 2 players 
         //this.whitePlayer = Player(true,true,null,[]);
@@ -83,6 +83,10 @@ export default class ChessBoard
         else if (oldPiece.getType() == "king")
         {   
 
+            oldPiece.setMoved(true);
+        }
+        else if(oldPiece.getType() == "rook")
+        {
             oldPiece.setMoved(true);
         }
 
@@ -647,49 +651,6 @@ export default class ChessBoard
         }
     }
 
-    /**
-     * 
-     * @param {the color of the player's turn} color 
-     * @returns 
-     */
-    determineValidMoves(color)
-    {
-
-        //these contain all of the squares that the checked player can move to 
-        let candidateSquares = new Set();
-
-        //all of the places that the attacking pieces responsible for checking the king control 
-        let controlledSquares = new Set(); 
-        for(let i = 0; i < checkingPieces.length; i++)
-        {
-            let squares = checkingPieces.getMoveableSquares();
-            for(let j = 0; j < squares.length; j++)
-            {
-                controlledSquares.add(square[j]);
-            }
-        }
-        //console.log(controlledSquares);
-        let kingPosition = checkedKing.getBoardSquare();
-
-        //Get set of squares which are the union of the attacking pieces and put them in a set
-
-        //Go through the checked player's pieces and check if: 
-        //if king, check if the king can move to any square not controlled in the 
-        
-        return candidateSquares;
-    }
-
-    getDetermineIfKingIsCheckMated(kingPiece)
-    {
-        //Checks if a king is checkmated
-
-        //Get available movement squares for king
-
-        //Check if any opposing color pieces have these squares within their scope 
-
-        //If the king has no moveable squares then remove them
-    }
-
     //Returns if the black king is checked 
     getBlackKingChecked()
     {
@@ -718,5 +679,23 @@ export default class ChessBoard
     getBlackCheckMated()
     {
         return this.blackIsCheckMated;
+    }
+    
+    /**
+     * Returns black king
+     * @returns Reutrns the black king object
+     */
+    getBlackKing()
+    {
+        return this.blackKing;
+    }
+
+    /**
+     * Returns white king 
+     * @returns Returns the white king object
+     */
+    getWhiteKing()
+    {
+        return this.whiteKing;
     }
 }

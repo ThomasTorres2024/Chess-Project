@@ -81,7 +81,7 @@ export default class Coordinator
                     
                     //Moves the king 
                     //if the king hasn't moved check if move was `castle` move 
-                    if(!king.getMoved() && (newSquareCoord[0] == "G" || newSquareCoord == "C"))
+                    if(!king.getMoved() && (newSquareCoord[0] == "G" || newSquareCoord[0] == "C"))
                     {   
                         //set rank val
                         let rank = 1;
@@ -157,11 +157,30 @@ export default class Coordinator
         this.blackCheckMated=this.chessBoardVar.getBlackCheckMated();
         this.whiteCheckMated=this.chessBoardVar.getWhiteCheckMated();
         this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
+
+        //Display the check if the pieces are checkmates 
+        if(this.blackChecked)
+        {
+            this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getBlackKing());
+        }
+        else if(this.whiteChecked)
+        {
+            this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getWhiteKing());
+        }
+
+        //Undo any checks on pieces if they are no longer checked  
+        if(!this.blackChecked)
+        {
+            this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getBlackKing());
+        }
+        else if(!this.whiteChecked)
+        {
+            this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getWhiteKing());
+        }
+
         console.log("Black checked: " + this.blackChecked);
         console.log("White checked: " + this.whiteChecked);
 
-
-        
     }
 
     //Castles, performs a castle, adds castle info to the round, and add to display
@@ -172,6 +191,7 @@ export default class Coordinator
         
         //set king moved and castle round 
         king.setMoved(true);
+        rook.setMoved(true);
         this.roundManager.addCastle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare, king, rook);  
     }
 

@@ -230,6 +230,73 @@ class BoardGraphicsManager
         document.getElementById(point).style.backgroundColor = color;
     }
     
+    /**
+     * Highlights king on the board if it is checked 
+     * @param {King Piece} king 
+     */
+    highlightCheckedPiece(king)
+    {   
+        //make sure that the king is not null and that it is a king type 
+        if(king && king.getType() == "king")
+        {
+            //get the color 
+            let kingColor = king.getColor();
+            let coords = king.getBoardSquare();
+
+            let imgSrc = "/images/board_events/";
+            if(kingColor == "black")
+            {
+                imgSrc+="king_black_checked"
+            }
+            else
+            {
+                imgSrc+="king_white_checked";
+            }
+            imgSrc+=".png"
+
+            //determine the image 
+            this.swapPiece(coords,coords,imgSrc);
+    
+        }
+        else
+        {
+            console.log("ERROR. Attempted to highlight a king when the piece was not a king")
+        }
+    }
+
+    /**
+     * Dehighlights king on the board if it is no longer checked 
+     * @param {King Piece} king 
+     */
+    dehighlightCheckedPiece(king)
+    {   
+        //make sure that the king is not null and that it is a king type 
+        if(king && king.getType() == "king")
+        {
+            //get the color 
+            let kingColor = king.getColor();
+            let coords = king.getBoardSquare();
+
+            let imgSrc = "/images/pieces/";
+            if(kingColor == "black")
+            {
+                imgSrc+="king_black"
+            }
+            else
+            {
+                imgSrc+="king_white";
+            }
+            imgSrc+=".png"
+
+            //determine the image 
+            this.swapPiece(coords,coords,imgSrc);
+    
+        }
+        else
+        {
+            console.log("ERROR. Attempted to highlight a king when the piece was not a king")
+        }
+    }
 
     //Getters 
 

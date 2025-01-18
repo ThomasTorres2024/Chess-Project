@@ -13,19 +13,30 @@ export default class King extends ChessPiece{
         this.whiteChar="♔"
         this.hasMoved = false;
 
-        this.kingSideRook = null;
-        this.queenSideRook = null; 
+        this.kingSideRook;
+        this.queenSideRook; 
 
         //the squares that the king can castle to 
         this.castleableSquares = [];
 
-        //set bishop image 
+        this.canQueenSideCastle = false;
+        this.canKingSideCastle = false; 
+
+        this.setOfSquaresClearToCastleQueenSide;
+        this.setOfSquaresClearToCastleKingSide;
+
+
+        //set bishop image and set the set of pieces to be clear which is necessary to castle 
         if (this.color == "white")
             {
-                this.setImageName("/images/pieces/king_white.png")
+                this.setImageName("/images/pieces/king_white.png");
+                this.setOfSquaresClearToCastleKingSide = new Set(["F1","G1"]);
+                this.setOfSquaresClearToCastleQueenSide = new Set(["D1","C1","B1"]);
             }
             else{
-                this.setImageName("/images/pieces/king_black.png")
+                this.setImageName("/images/pieces/king_black.png");
+                this.setOfSquaresClearToCastleKingSide = new Set(["F8","G8"]);
+                this.setOfSquaresClearToCastleQueenSide = new Set(["D8","C8","B8"]);
             }
     }   
 
@@ -80,7 +91,7 @@ export default class King extends ChessPiece{
     //Determine moveable coords 
     defineMoveableAndHittableSquares()
     {
-        super.defineMoveableAndHittableSquares();
+        super.defineMoveableAndHittableSquares();   
 
         //Check for pieces above, below, left, and right of current square 
 
@@ -148,53 +159,59 @@ export default class King extends ChessPiece{
         {   
             //define king and queenside elements 
             let kingsideFiles = ["F","G"]
-            let queensideFiles = ["D","C","B"]
-            let totalSet = [kingsideFiles,queensideFiles];
+            let queensideFiles = ["D","C"]
 
-            //Change rank value if color is black
-            let rank=1; 
-            if(this.getColor() == "black")
+            if(this.processSide(kingsideFiles) && !this.kingSideRook.getMoved())
             {
-                rank=8;
+                this.canKingSideCastle=true;
             }
 
-            //iterate through both king and queenside 
-            for(let i = 0; i<totalSet.length;i++)
-            {   
-                //get the iterated set, and asusme that all values are valid, temp set is for all squares that work
-                let iterated = totalSet[i];
-                let allValid = true;
-                let temp = []
-
-                for(let j = 0; j<iterated.length;j++ )
-                {   
-                    //get the square, check if the square is filled, if it is silled then do not cocatenate the sets 
-                    let square = this.getBoard().getSquareAt(iterated[j]+rank);
-                    if(square.getFilled())
-                    {
-                        allValid = false;
-                        break;
-                    }
-                    else
-                    {
-                        temp.push(iterated[j]+rank)
-                    }
-                }
-
-                //if all squares were valid concatenate the result
-                if(allValid)
-                {
-
-                    for(let i = 0; i < temp.length; i++)
-                    {
-                        moveableSquares.push(temp[i]);
-                        this.castleableSquares.push(temp[i]);
-                    }
-                    console.log(temp);
-                }
+            if(this.processSide(queensideFiles) && !this.queenSideRook.getMoved())
+            {
+                this.canQueenSideCastle=true; 
             }
-
         }
+    }
+
+    processSide(iterated)
+    {   
+        //get the iterated set, and asusme that all values are valid, temp set is for all squares that work
+        let allValid = true;
+        let temp = []
+        
+        //Change rank value if color is black
+        let rank=1; 
+        if(this.getColor() == "black")
+        {
+            rank=8;
+        }
+
+        for(let j = 0; j<iterated.length;j++ )
+        {   
+            //get the square, check if the square is filled, if it is silled then do not cocatenate the sets 
+            let square = this.getBoard().getSquareAt(iterated[j]+rank);
+            if(square.getFilled())
+            {
+                allValid = false;
+                break;
+            }
+            else
+            {
+                temp.push(iterated[j]+rank)
+            }
+        }
+    
+        //if all squares were valid concatenate the result
+        if(allValid)
+        {
+            for(let i = 0; i < iterated.length; i++)
+                {
+                    this.moveableSquares.push(temp[i]);
+                    this.castleableSquares.push(temp[i]);
+                }
+        }
+        
+        return allValid;
     }
     
 }

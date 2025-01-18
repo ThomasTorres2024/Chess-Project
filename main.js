@@ -31,7 +31,7 @@ function main()
 
         let coordinator = new Coordinator(newChessBoard,boardGraphicsManager,roundManager,roundDisplay);
         
-        //checkTest(coordinator);
+        royLopez(coordinator);
         getUserBoardInput(coordinator); 
 }
 
