@@ -1,5 +1,6 @@
 import ChessPiece from "/board/chess_pieces/chesspiece.js"
 import ChessBoard from "/board/chessboard.js";
+import {cartesianToFileMap,fileToCartesianMap} from "/board/boardutility.js"
 
 //Pawn subclass 
 export default class Pawn extends ChessPiece{
@@ -11,6 +12,7 @@ export default class Pawn extends ChessPiece{
 
         //important to check if the pawn can move 1 or 2 squares
         this.hasMoved = false; 
+        this.enPassantAbleSquares = [];
         this.setBlackChar("♟")
         this.setWhiteChar("♙")
 
@@ -38,7 +40,66 @@ export default class Pawn extends ChessPiece{
         return this.hasMoved;
     }
 
-    //Determine Moveable Coords 
+    /**
+     *Changes Squares which the pawn can en passant to 
+     * @param {List of squares we can en passant to} newSquares 
+     */
+    setEnPassantSquares(newSquares)
+    {
+        this.enPassantAbleSquares=newSquares;
+    }
+
+    /**
+     * Returns squares that can be enPassanted too
+     * @returns en passantable squares 
+     */
+    getEnPassantSquares()
+    {
+        return this.enPassantAbleSquares;
+    }
+
+    /**
+     * Adds en passant squares if a move satisfying en passant ocurred last move
+     * @returns squares that contain pawns with a rank above where the pawns moved to
+     */
+    checkEnPassantSquares()
+    {  
+
+        this.setEnPassantSquares([]);
+
+        if(!this.board.getRoundManager())
+        {
+            return;
+        }
+
+
+        let roundPrevious=this.board.getRoundManager().getCurrentRound();
+        let pieceFinalPos = roundPrevious.getPieceFinalPosition();
+        let pieceMoved = roundPrevious.getPiece();
+        // console.log(pieceFinalPos);
+        // console.log(pieceMoved)
+        let availableSquares = [];
+
+        let finalPieceFileAsNumber = fileToCartesianMap.get(pieceFinalPos[0]);
+        let left = cartesianToFileMap.get(finalPieceFileAsNumber-60);
+        let right = cartesianToFileMap.get(finalPieceFileAsNumber+60);
+        
+        //En passant for Black Conditions 
+        if(this.getColor() == "black" && this.getBoardSquare()[1]=="4" && pieceMoved.getType() == "pawn" && pieceMoved.getColor() == "white" && pieceFinalPos[1] == "4" && ( left == this.getBoardSquare()[0]|| right == this.getBoardSquare()[0]))
+        {
+            this.enPassantAbleSquares.push(pieceFinalPos[0]+3);
+            this.moveableSquares.push(pieceFinalPos[0]+3)
+        }
+
+        //En passant for white conditions
+        else if(this.getColor() == "white" && this.getBoardSquare()[1]=="5" && pieceMoved.getType() == "pawn" && pieceMoved.getColor() == "black" && pieceFinalPos[1] == "5" && ( left == this.getBoardSquare()[0]|| right == this.getBoardSquare()[0]))
+        {
+            this.enPassantAbleSquares.push(pieceFinalPos[0]+6);
+            this.moveableSquares.push(pieceFinalPos[0]+6);
+        }
+
+        return availableSquares
+    }
     
     //Need to add a feature for en passant later 
     defineMoveableAndHittableSquares()
@@ -117,8 +178,17 @@ export default class Pawn extends ChessPiece{
 
         let moveableSquares = this.getMoveableSquares();
         let takeableSquares = this.getTakeableSquares();
-        
-        pawnTakeableEvaluation(this,candidatesTakeable,takeableSquares)
-        pawnMoveAbility(this,candidatesMoveble,moveableSquares)
+
+        //Add en passant squares before checking 
+        this.checkEnPassantSquares();   
+
+        pawnTakeableEvaluation(this,candidatesTakeable,takeableSquares);
+        pawnMoveAbility(this,candidatesMoveble,moveableSquares);
+
+        // console.log(this.moveableSquares)
+        // console.log(this.takeableSquares)
+
+        //process en passant 
+
     }
 }

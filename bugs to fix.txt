@@ -1,5 +1,0 @@
-List of Bugs to Fix:
--Black Castling Gives 2 Rounds 
--King cannot castle when checked 
--Check Decal Remains on Piece when Checking Piece Taken
--If Queenside Rook Moves, we still get the option of moving shouldn't be there 

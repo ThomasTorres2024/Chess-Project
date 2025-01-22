@@ -26,12 +26,15 @@ function main()
         //let boardGraphicsManager = new BoardGraphicsManager(newChessBoard,cherryDark,cherryLight,cherryHighlightLight,cherryHighlightDark);
         let roundManager = new RoundManager(newChessBoard);
         let roundDisplay = new RoundDisplay(roundManager);
+
+        //set board and graphics managers 
         newChessBoard.setGraphicsManager(boardGraphicsManager);
+        newChessBoard.setRoundManager(roundManager);
         console.log(newChessBoard.toString());
 
         let coordinator = new Coordinator(newChessBoard,boardGraphicsManager,roundManager,roundDisplay);
         
-        royLopez(coordinator);
+        //checkPawnQueenPromo(coordinator);
         getUserBoardInput(coordinator); 
 }
 
@@ -45,6 +48,12 @@ function royLopez(coordinator)
         coordinator.modifyBoard("D7","D6"); 
 }
 
+function checkPawnQueenPromo(coordinator)
+{
+        coordinator.modifyBoard("E2","E4");    
+        coordinator.modifyBoard("E7","E5");
+        coordinator.modifyBoard("E4","E7");        
+}
 
 function checkTest(coordinator)
 {

@@ -1,0 +1,15 @@
+List of Bugs to Fix:
+-Black Castling Gives 2 Rounds 
+-King cannot castle when checked 
+-Check Decal Remains on Piece when Checking Piece Taken
+
+Implementations:
+-En Passant Isn't a part of checking considerations
+-Castling isn't directly a part of checking considerations
+-Under Promotion Selected by User 
+-PGN Importer and Parser, will be used for testing the game 
+-Work on sidebar display, needs to be centered and padded with same number of characters  
+-Wikibook 
+-Stockfish Integration
+-Other Data Visualization
+-Proceed to more debugging and testing? Seems like the last feature 

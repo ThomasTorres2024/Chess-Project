@@ -30,6 +30,10 @@ export default class Coordinator
         this.blackChecked = false;
         this.whiteCheckMated = false;
         this.blackCheckMated = false; 
+        this.isDrawnByAgreement = false;
+        this.isDrawnByStaleMate = false; 
+        this.isDrawnByRepetition = false;
+
     }
 
     //Processes a move on the board, this function will be called and used extensively in this program.
@@ -57,6 +61,21 @@ export default class Coordinator
         else if(this.whiteCheckMated)
         {
             console.log("Black wins.");
+        }
+
+        else if(this.isDrawnByStaleMate)
+        {
+            console.log("Drawn by stalemate.");
+        }
+
+        else if(this.isDrawnByRepetition)
+        {
+            console.log("Drawn by 3 fold repetition");
+        }
+
+        else if(this.isDrawnByAgreement)
+        {
+            console.log("Drawn by agreement");
         }
 
         //Return to this part later comment out for now 
@@ -101,7 +120,7 @@ export default class Coordinator
                         let oldRookSquare = oldFileRook+rank;
                         let newRookSquare = newFileRook+rank;
                         let rook = this.chessBoardVar.getSquareAt(oldRookSquare).getPiece();
-
+                        console.log(oldRookSquare);
                         this.castle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare,king,rook);
                     }
 
@@ -110,6 +129,29 @@ export default class Coordinator
                     {
                         this.modifyBoard(oldSquareCoord,newSquareCoord);
                     }
+                }
+
+                //Check if piece is pawn, try and determine if the piece can do en passant or something 
+                else if(piece.getType()=="pawn")
+                {   
+                    let pawnCoords = piece.getBoardSquare();
+
+                    let rank = newSquareCoord[1];
+                    //Check for Promotion
+                    if(rank == "1" || rank == "8")
+                    {
+                        this.chessBoardVar.promoPawnToQueen(pawnCoords,newSquareCoord,"queen");
+                    }
+
+                    //if there are squares that can be enPassanted to
+                    else if(piece.getEnPassantSquares().length > 0 && piece.getEnPassantSquares()[0] == newSquareCoord)
+                    {
+                        this.chessBoardVar.enPassant(piece);
+                    }
+
+                    //en passant for white 
+                    this.modifyBoard(pawnCoords,newSquareCoord);
+                    
                 }
 
                 //Moves piece types which are not kings 
@@ -134,6 +176,8 @@ export default class Coordinator
         }
     }
 
+
+
     //Standard move occurs on the board, takes piece's old square and new square and changes it 
     //The checking portion is done inside of the chessboard class, and is called when we move a piece,
     //once it is done executing we update the black and white checked variables
@@ -157,35 +201,55 @@ export default class Coordinator
         this.blackCheckMated=this.chessBoardVar.getBlackCheckMated();
         this.whiteCheckMated=this.chessBoardVar.getWhiteCheckMated();
         this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
+        this.isDrawnByStaleMate=this.chessBoardVar.getStalemate();
 
         //Display the check if the pieces are checkmates 
         if(this.blackChecked)
         {
+            console.log("Black checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getBlackKing());
         }
         else if(this.whiteChecked)
         {
+            console.log("White checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getWhiteKing());
         }
 
-        //Undo any checks on pieces if they are no longer checked  
-        if(!this.blackChecked)
+        //Game Ending State Functions and continue game part
+        if(this.isDrawnByStaleMate)
         {
-            this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getBlackKing());
+            console.log("Game over by stalemate.")
         }
-        else if(!this.whiteChecked)
+        else if(this.blackCheckMated)
         {
-            this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getWhiteKing());
+            console.log("Game over by black being checkmated")
+        }
+        else if(this.whiteCheckMated)
+        {
+            console.log("Game over by white being checkmated")
         }
 
-        console.log("Black checked: " + this.blackChecked);
-        console.log("White checked: " + this.whiteChecked);
+        //Continue Game 
+        else
+        {
+            //Undo any checks on pieces if they are no longer checked  
+            if(!this.blackChecked)
+            {
+                this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getBlackKing());
+            }
+            else if(!this.whiteChecked)
+            {
+                this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getWhiteKing());
+            }
+        }
 
     }
 
     //Castles, performs a castle, adds castle info to the round, and add to display
     castle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare,king,rook)
     {   
+        console.log(rook);
+
         //change board contents 
         this.chessBoardVar.castle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare,king.getImageName(),rook.getImageName());
         

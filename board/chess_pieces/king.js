@@ -25,6 +25,9 @@ export default class King extends ChessPiece{
         this.setOfSquaresClearToCastleQueenSide;
         this.setOfSquaresClearToCastleKingSide;
 
+        //If the king is checked or not 
+        this.isChecked = false; 
+
 
         //set bishop image and set the set of pieces to be clear which is necessary to castle 
         if (this.color == "white")
@@ -82,6 +85,24 @@ export default class King extends ChessPiece{
         this.castleableSquares=newCastleableSquares;
     }
 
+    /**
+     * Changes value for the piece being checked
+     * @param {New boolean for if the piece is checked} newChecked 
+     */
+    setIsChecked(newChecked)
+    {
+        this.isChecked=newChecked;
+    }
+
+    /**
+     * Returns if the king is checked 
+     * @returns If the king is checked
+     */
+    getIsChecked()
+    {
+        return this.isChecked;
+    }
+
     //Gets vals of castleable squares
     getCastleableSquares()
     {
@@ -109,6 +130,8 @@ export default class King extends ChessPiece{
         let bottomRankIterative =rank-1 
         let upperRankiterative = rank+2
         let upperFileBound = file+2;
+
+        //set bounds for iteration
         if (fileIterative<65)
         {
             fileIterative = 65; 
@@ -161,18 +184,43 @@ export default class King extends ChessPiece{
             let kingsideFiles = ["F","G"]
             let queensideFiles = ["D","C"]
 
-            if(this.processSide(kingsideFiles) && !this.kingSideRook.getMoved())
+            let kingSideList = this.processSide(kingsideFiles);
+            let queenSideList = this.processSide(queensideFiles);
+
+            //Check if the lists for queen side and king side castles have valid members, if the rook hasn't moved, and if the king is not
+            //in a check currently 
+            if(kingSideList.length > 0 && !this.kingSideRook.getMoved() && !this.getIsChecked())
             {
                 this.canKingSideCastle=true;
+                this.addMoveableSquares(kingSideList);
             }
 
-            if(this.processSide(queensideFiles) && !this.queenSideRook.getMoved())
+            if(queenSideList.length > 0 && !this.queenSideRook.getMoved() && !this.getIsChecked())
             {
                 this.canQueenSideCastle=true; 
+                this.addMoveableSquares(queenSideList);
             }
         }
     }
 
+    /**
+     * Adds squares in a list to the moveable and castleable squares in the king's scope 
+     * @param {The list of elements which can be moved to, use this if the kingside rook hasn't moved or if the queenside rook hasn't moved} moves 
+     */
+    addMoveableSquares(moves)
+    {
+        for(let i = 0; i < moves.length; i++)
+            {
+                this.moveableSquares.push(moves[i]);
+                this.castleableSquares.push(moves[i]);
+            }
+    }
+
+    /**
+     * Processes the kingside and queenside files which a king could move to if they are clear 
+     * @param {A list containing the files that need to be clear in order to perform a castle on the queen or kingside} iterated 
+     * @returns A list with the squares that the king can move to if they do not have any pieces on the board blocking the king
+     */
     processSide(iterated)
     {   
         //get the iterated set, and asusme that all values are valid, temp set is for all squares that work
@@ -200,18 +248,9 @@ export default class King extends ChessPiece{
                 temp.push(iterated[j]+rank)
             }
         }
-    
-        //if all squares were valid concatenate the result
-        if(allValid)
-        {
-            for(let i = 0; i < iterated.length; i++)
-                {
-                    this.moveableSquares.push(temp[i]);
-                    this.castleableSquares.push(temp[i]);
-                }
-        }
         
-        return allValid;
+        //return if all squares necessary to castle are valid and also change the list passed in to be the list of squares
+        return temp;
     }
     
 }

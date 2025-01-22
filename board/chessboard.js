@@ -24,6 +24,7 @@ export default class ChessBoard
 
         this.blackIsCheckMated = false; 
         this.whiteIsCheckMated = false;
+        this.stalemate = false; 
 
         this.whitePieces = new Set();
         this.blackPieces = new Set();
@@ -34,6 +35,7 @@ export default class ChessBoard
         this.setUpBoard();
         this.setUpPlayerPieces();
         this.graphicsManager=null;
+        this.roundManager=null;
 
         //Set Black King's Rooks
         this.blackKing = this.coordinateMap.get("E8").getPiece();
@@ -56,6 +58,37 @@ export default class ChessBoard
     popPiece(boardCoord)
     {
         this.getCoordinateMap(boardCoord).removePiece();
+    }
+
+    //Performs The first Part of En Passant, which takes the opposite colored pawn 
+    enPassant(pawnTaking)
+    {   
+        //
+        if(pawnTaking.getEnPassantSquares().length > 0)
+        {
+            //Determine position of the pawn
+            let positionToRemove;
+            let pieceSet;
+            //black case 
+            if(pawnTaking.getColor() == "white")
+            {
+                positionToRemove = pawnTaking.getEnPassantSquares()[0][0] + Number(Number(pawnTaking.getEnPassantSquares()[0][1])-1);
+                pieceSet=this.blackPieces;
+            }
+
+            //case for black 
+            else
+            {
+                positionToRemove = pawnTaking.getEnPassantSquares()[0][0] + Number(Number(pawnTaking.getEnPassantSquares()[0][1])+1);
+                pieceSet=this.whitePieces;
+            }
+
+            //remove piece now that position is determined, remove from graphics and from board
+            this.graphicsManager.removePieceImageFromBoard(positionToRemove);
+            this.coordinateMap.get(positionToRemove).setPiece(null);
+            pieceSet.delete(positionToRemove);
+        }   
+
     }
 
     //Performs a castle depending on it being king or queenside 
@@ -123,10 +156,7 @@ export default class ChessBoard
             this.whitePieces.delete(newSquareCoord);
         }
 
-        console.log("-----------------------------");
         piece.setBoardSquare(newSquareCoord.toString());
-        // console.log(this.getCoordinateMap().get(newSquareCoord).getPiece());
-        // console.log(this.whitePieces);
     }
 
     /**
@@ -154,19 +184,26 @@ export default class ChessBoard
             this.foreCastAllValidMoves("white");
         }
 
-        console.log(this.whiteMoveableQuantity);
-        console.log(this.blackMoveableQuantity);
+        //Game ending states when no moves remain
+        if(this.blackMoveableQuantity==0 || this.whiteMoveableQuantity == 0)
+        {   
+            //Blakc checmated case 
+            if(this.blackIsChecked)
+            {
+                this.blackIsCheckMated=true;
+            }
 
-        //if the piece is checked 
-        if(this.blackIsChecked && this.blackMoveableQuantity == 0)
-        {   
-            this.blackIsCheckMated=true;
-            console.log("Black is checked, under construction");
-        }
-        else if(this.whiteIsChecked && this.whiteMoveableQuantity ==0)
-        {   
-            this.whiteIsCheckMated=true;
-            console.log("White is checked under construction");
+            //White checkmate case
+            else if(this.whiteIsChecked)
+            {
+                this.whiteIsCheckMated=true;
+            }
+            
+            //Stalemate case 
+            else
+            {
+                this.stalemate=true;
+            }
         }
         
     }
@@ -208,9 +245,6 @@ export default class ChessBoard
                 }
             }
         }
-
-        // console.log(this.whitePieces);
-        // console.log(this.blackPieces);
     }
 
     //Sets up board according to laws of chess 
@@ -284,12 +318,35 @@ export default class ChessBoard
    }
 
     //Setters
+
+    /**
+     * Sets round manager after declaration
+     * @param {The new round manager} newRoundManager 
+     */
+   setRoundManager(newRoundManager)
+   {
+    this.roundManager=newRoundManager;
+   }
+
+   /**
+    * Sets the graphic manager
+    * @param {The new graphic manager} newGraphicsManager 
+    */
     setGraphicsManager(newGraphicsManager)
     {
         this.graphicsManager = newGraphicsManager;
     }
 
     //Getters
+
+    /**
+     * Returns round manager 
+     * @returns round manager object
+     */
+    getRoundManager()
+    {
+        return this.roundManager;
+    }
 
     getGraphicsManager()
     {
@@ -346,14 +403,11 @@ export default class ChessBoard
         //element is expected to be a BoardSquare object
         function evaluateElement(element)
         {   
-            //console.log(element)
 
             //convert board coord to index of the 8,8 matrix
             let x = 7-element.getCartesianCoords()[1]/60
             
             let y = element.getCartesianCoords()[0]/60
-            
-            //console.log(element.getPiece().toString())
 
             newArray[x][y]=element.getBoardCoords();
 
@@ -372,35 +426,6 @@ export default class ChessBoard
 
         return newArray;
     }
-
-
-    //The user has 3 operating modes:
-    //The flow of control for how the program will work will consider, on the first round we start at the unchecked mode, and then we move to the 
-    //checked mode as the first thing checked for any given round 
-    //Standard/unchecked 
-    //Checked Mode 
-    //Checkmated 
-
-    //Checking Check Mate Procedure 
-    //Idfc im doing a naive approach here hope to refine it later so im not checking all of the pieces
-    //Loop through all opposing colored pieces, check their takeable squares, add these to a list too of total takeable squares
-    //  Maybe to reduce run time I can have this as some kind of like list that perpetually grows, and I can sort it in some way
-    //  to make search time less ass, order doesn't matter so maybe using a set will make this easier
-    //If the king's square is in any of the pieces scope then the piece is checked, continue going through the rest of the pieces, return true
-    //and the array will be updated
-
-    //Needed to handle this:
-    //Function to manage set's content
-    //Way to efficiently search set/array if it is the same size ig? 
-    //Update board graphics if the king is in check 
-    //Array will be a new parameter for this class with its own getters and setters 
-    //Needs some way to communicate with game coordinator to change game features 
-
-    //Determine if the king is being checked 
-    //Tbh with this solution I don't have an intuitively good way to go about the checking process, 
-    //there are some things I can do to try and reduce the check time, but I think regardless of the type
-    //of move, I will have to brute force check many pieces to see what I can move in an efficient manner.
-    
 
     //If a piece of white just moved, we want to go through white's pieces, and check
     //if they intersect with black's king, and if a piece of black just moved, we 
@@ -441,9 +466,6 @@ export default class ChessBoard
                 possibleTakes=possibleTakes.concat(piece.getMoveableSquares());
             }
 
-            //console.log(possibleTakes)
-            // console.log(piece);
-            //console.log(possibleTakes);
             //go through the possible places that we can move to, set checked to be true,
             //and add piece to 
             for(let i = 0; i < possibleTakes.length; i++)
@@ -451,14 +473,11 @@ export default class ChessBoard
                 //when white checks a black piece 
                 if(possibleTakes[i] == kingLocation && color == "white")
                 {
-                    //console.log(value);
-                    //console.log(piece.toString() + " caused a check");
                     return 0; 
                 }
                 //when black checks a white piece 
                 else if (possibleTakes[i] == kingLocation && color == "black")
                 {
-                    //console.log(piece.toString() + " caused a check");
                     return 1;
                 }
             }    
@@ -488,7 +507,6 @@ export default class ChessBoard
 
         for(const pieceCoord of playerSet)
         {
-            //console.log(pieceCoord);
             const square = this.coordinateMap.get(pieceCoord)
 
             //Check to only process only squares that have pieces  
@@ -620,14 +638,60 @@ export default class ChessBoard
         }
 
     }
+    
+    /**
+     * Promotes queen at promotion line 
+     * @param {The old square the pawn was located at} oldSquare 
+     * @param {The square the pawn will move to} newSquare 
+     * @param {The piece type that will be changed to} type 
+     */
+    promoPawnToQueen(oldSquare,newSquare,type)
+    {
+        let pawn = this.coordinateMap.get(oldSquare).getPiece();
+        if(pawn)
+        {
+            //create new piece of user's choosing, queen by default, swap queen and  
+            let pawnColor = pawn.getColor();
+            let newPiece;
+
+            //create piece by new type user has chosen type 
+            switch(type)
+            {
+                case "queen":
+                    newPiece = new Queen(newSquare,pawnColor,this);
+                    break;
+                case "bishop":
+                    newPiece = new Bishop(newSquare,pawnColor,this);
+                    break;  
+                case "horse":
+                    newPiece = new Horse(newSquare,pawnColor,this);
+                    break; 
+                case "rook":
+                    newPiece = new Rook(newSquare,pawnColor,this);
+                    break;  
+            }
+
+            //perform swap now formally that piece has been assigned to where the pawn was 
+            let square = this.coordinateMap.get(oldSquare); 
+            square.setPiece(newPiece);
+            // this.movePiece(oldSquare,newSquare);
+            // this.graphicsManager.swapPiece(newSquare,newSquare,newPiece.getImageName());
+        }
+        else
+        {
+            console.log("ERROR. Attempted to move pawn that isn't on board");
+        }
+    }
 
     /**
      * Takes the color of the attacking piece after a round, and determines if a check 
-     * has been induced on the enemy king 
+     * has been induced on the enemy king. Basically serves the responsibility of manging pieces being checked in the program.  
      * @param {Color of attacking piece} color 
      */
     determineAfterMoveIfPositionHasACheck(color)
     {   
+
+
         /*Function results in 0--> Black Check, 1 --> White Check, -1 No Changes on the board and 
         handles accordingly
         */
@@ -636,16 +700,17 @@ export default class ChessBoard
         switch(positionResult)
         {
             case 1:
-                console.log("White is checked");
                 this.whiteIsChecked=true;
+                this.whiteKing.setIsChecked(true);
                 break; 
             case 0:
-                console.log("Black is checked.");
                 this.blackIsChecked=true;
+                this.blackKing.setIsChecked(true);
                 break; 
             case -1: 
-                console.log("No check,");
                 this.blackIsChecked=false;
+                this.blackKing.setIsChecked(false);
+                this.whiteKing.setIsChecked(false);
                 this.whiteIsChecked=false;
                 break; 
         }
@@ -698,4 +763,10 @@ export default class ChessBoard
     {
         return this.whiteKing;
     }
+
+    getStalemate()
+    {
+        return this.stalemate;
+    }
+
 }

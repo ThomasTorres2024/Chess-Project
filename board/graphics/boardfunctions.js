@@ -87,7 +87,7 @@ class BoardGraphicsManager
 
         for(let i = 0; i< this.getVisualizedTakeableSquares().length  ; i++)
         {   
-            let point = this.getVisualizedTakeableSquares()[i]
+            let point = this.getVisualizedTakeableSquares()[i];
             let imageDir = piece.getBoard().getSquareAt(point).getPiece().getTakeableName();
             this.highlightTakeableSquare(point,imageDir);
         }

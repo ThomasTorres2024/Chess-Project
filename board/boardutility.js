@@ -403,4 +403,4 @@ function convertBoardPositionCartesian(pair)
 
 export{convertBoardPositionCartesian,convertFileToCartesian,convertCartesianToFile,
     convertCartesianChessCoords,iterateOverRank,iterateOverFile,iterateUpwardRight,iterateDownwardRight,checkValidityPoints,
-    convertApproximateCoordsToBoard,pointToColor}
+    convertApproximateCoordsToBoard,pointToColor,fileToCartesianMap,cartesianToFileMap}
