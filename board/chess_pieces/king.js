@@ -120,7 +120,7 @@ export default class King extends ChessPiece{
 
         let file  = this.boardSquare[0].charCodeAt(0);
         let rank  = parseInt(this.boardSquare[1]);
-
+        this.castleableSquares=[];
         let fileIterative = file-1;
         let moveableSquares = this.getMoveableSquares();
         let takeableSquares = this.getTakeableSquares();

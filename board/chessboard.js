@@ -60,26 +60,52 @@ export default class ChessBoard
         this.getCoordinateMap(boardCoord).removePiece();
     }
 
+    /**
+     * Determines what pawn can be enPassanted to if any, returns null if none, and r 
+     * @param {The pawn in question} pawnTaking 
+     * @returns Square at which pawn can be accessed if any, null otherwise 
+     */
+    determineEnPassantPawnPosition(pawnTaking)
+    {
+        let positionToRemove=null;
+        //Check if there are any valid squares to en passant
+        if(pawnTaking.getEnPassantSquares().length > 0)
+            {
+                //black case 
+                if(pawnTaking.getColor() == "white")
+                {
+                    positionToRemove = pawnTaking.getEnPassantSquares()[0][0] + Number(Number(pawnTaking.getEnPassantSquares()[0][1])-1);
+                }
+    
+                //case for black 
+                else
+                {
+                    positionToRemove = pawnTaking.getEnPassantSquares()[0][0] + Number(Number(pawnTaking.getEnPassantSquares()[0][1])+1);
+                }
+            }
+        
+        return positionToRemove;
+    }
+
     //Performs The first Part of En Passant, which takes the opposite colored pawn 
     enPassant(pawnTaking)
     {   
-        //
+        //Check if there are any valid squares to en passant
         if(pawnTaking.getEnPassantSquares().length > 0)
         {
             //Determine position of the pawn
-            let positionToRemove;
+            let positionToRemove = this.determineEnPassantPawnPosition(pawnTaking);
             let pieceSet;
+
             //black case 
             if(pawnTaking.getColor() == "white")
             {
-                positionToRemove = pawnTaking.getEnPassantSquares()[0][0] + Number(Number(pawnTaking.getEnPassantSquares()[0][1])-1);
                 pieceSet=this.blackPieces;
             }
 
             //case for black 
             else
             {
-                positionToRemove = pawnTaking.getEnPassantSquares()[0][0] + Number(Number(pawnTaking.getEnPassantSquares()[0][1])+1);
                 pieceSet=this.whitePieces;
             }
 
@@ -523,12 +549,52 @@ export default class ChessBoard
                 let newTakeableMoves = [];
                 let firstSquare = pieceCoord;
 
+                //evaluate en passants to see if they induce checks as well
+                if(piece.getType()=="pawn")
+                {
+                    //if there is one square to en passant to, try to en passant here this requires
+                    //some additional prep to set up before executing 
+                    if(piece.getEnPassantSquares().length > 0)
+                    {
+                        let endSquare = piece.getEnPassantSquares()[0];
+                        let positionToRemove = this.determineEnPassantPawnPosition(piece);
+
+                        //Start by preserving piece at the square and remove from its respective set
+                        let pawnPreserved = this.coordinateMap.get(positionToRemove).getPiece();
+                        let pawnPreservedIcon = pawnPreserved.getImageName();
+                        let removeableSet;
+                        if(piece.getColor()=="white")
+                        {
+                            removeableSet=this.blackPieces;
+                        }
+                        else
+                        {
+                            removeableSet=this.whitePieces;
+                        }
+
+                        //remove from set and trial
+                        this.enPassant(piece);
+                        this.evaluateMove(firstSquare,endSquare,newPossibleMoves);
+
+                        //when done return elements to board and set
+                        console.log(removeableSet);
+                        removeableSet.add(positionToRemove);
+                        this.coordinateMap.get(positionToRemove).setPiece(pawnPreserved);
+                        this.graphicsManager.addPieceToBoard(positionToRemove,pawnPreservedIcon);
+                    }
+                }
+
                 //go through all of the possible moves and posisble takes, this will append elements
                 //to the possible moves and takeable moves functions 
                 for(let i = 0; i < possibleMoves.length; i++)
                 {   
                     let newSquare = possibleMoves[i];
-                    this.evaluateMove(firstSquare,newSquare,newPossibleMoves);
+
+                    //Ensure en passantable squares won't be doubled counted 
+                    if((piece.getType()!="pawn")||(piece.getType()=="pawn" && !piece.getEnPassantSquares().includes(newSquare)) )
+                    {
+                        this.evaluateMove(firstSquare,newSquare,newPossibleMoves);
+                    }
                 }
                 for(let j = 0; j < possibleTakes.length; j++)
                 {

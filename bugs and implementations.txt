@@ -6,6 +6,8 @@ List of Bugs to Fix:
 
 Implementations:
 -En Passant Isn't a part of checking considerations
+    -Seems to work fine now?
+-Double check under moveable squares to make sure the pieces moveable squares are not double counted
 -Castling isn't directly a part of checking considerations
 -Under Promotion Selected by User 
 -PGN Importer and Parser, will be used for testing the game 
