@@ -1,6 +1,7 @@
 List of Bugs to Fix:
 -Black Castling Gives 2 Rounds 
 -King cannot castle when checked 
+-Sometimes king can take their own pieces after castling?
 -Check Decal Remains on Piece when Checking Piece Taken
 
 Implementations:

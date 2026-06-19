@@ -1,37 +1,42 @@
-#all
-{
+#all {
   background: linear-gradient(#e66465, #9198e5);
   background-repeat: no-repeat;
-  background-attachment: fixed; 
+  background-attachment: fixed;
 }
 
-#navbar_container{
-text-align: center;
+#navbar_container {
+  text-align: center;
 }
 
-#navbar li{
-  float:left;
+#navbar li {
+  float: left;
 }
 
-#round_record
-{
+#round_record {
+  display: flex;
+  flex-direction: column;
   border-style: double;
+  justify-content: flex-start;
   border-radius: 3;
-  margin-left:3%;
+  margin-left: 3%;
   margin-top: 2%;
   border-color: white;
   height: 450px;
   width: 250px;
 }
 
-#round_record h4{
+#round_record ul {
+  background-color: white;
+}
+
+#round_record h4 {
   color: white;
   font-family: 'Lucida Console';
-  font-size:13px;
+  font-size: 13px;
   margin-left: auto;
   margin-right: auto;
 
-  
+
 
 }
 
@@ -40,654 +45,707 @@ text-align: center;
   width: 10px;
 }
 
-#round{
+#round {
   border-style: double;
   border-color: white;
   border-radius: 3;
-  display:flex;
+  display: flex;
   margin-top: 0px;
 }
 
-#round_record li
-{
-  margin-right:25%;
+#round_record li {
+  margin-right: 25%;
 }
 
-#round_record ul
-{
-  margin-right: 20%;
-  display:flex;
+
+#stockfish_toggle {
+  display: flex;
+  justify-content: space-around;
+  height: 10%;
+  
+  border-bottom: double;
+  border-radius: 3px;
+  border-color: white;
+  margin-bottom: 20px;
+}
+
+.round_record_container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-right: 3%;
+  height: 5%;
+  
+  
+}
+
+.is_active_round{
+  background-color: rgb(0 0 30 / 50%); ;
+}
+
+.round_content {
+  display: flex;
+  justify-content: center;
+  width: calc(100% / 3);
+  height:100%;
+
+
+  color: white;
+  font-family: 'Lucida Console';
+  font-size: 13px;
+}
+
+#round_record ul {
+  display: flex;
   list-style-type: none;
 }
 
-#wikibookcontainer
-{
-  border-style:double;
+.round_content_numeric{
+  border-right: double;
+  border-color: white;
+  border-width: 3px;
+  background-color: rgb(70 0 30 / 15%);
+}
+
+#wikibookcontainer {
+  border-style: double;
   border-radius: 3;
-  margin-left:3%;
+  margin-left: 3%;
   margin-top: 2%;
   border-color: white;
   height: 450px;
   width: 250px;
 }
 
-#move
-{
+#move {
   display: flex;
   margin: top -15px;
 }
 
-#middle_part
-{
+#import_PGN_text {
+  margin-top: 5%;
+  margin-left: 5%;
+}
+
+#pgn_submission {
+  display: flex;
+  justify-content: center;
+  border-style: double;
+  margin: 0;
+  text-align: center;
+  font-family: 'Lucida Console';
+  color: white;
+}
+
+#middle_part {
   display: flex;
 }
 
-#navbar a{
+#navbar a {
   text-decoration: none;
-  color:white;
-  display:block;
+  color: white;
+  display: block;
   text-align: center;
   padding-right: 10px;
-  padding-left:10px;
+  padding-left: 10px;
 }
 
-#navbar ul
-{ 
+#navbar ul {
   list-style-type: none;
   margin: 0px;
   padding: 0px;
   overflow: hidden;
   font-family: 'Lucida Console';
 
-  font-size:13px;
+  font-size: 13px;
 }
 
-#navbar a:hover{
-  background: rgb(19,27,115);
+#navbar a:hover {
+  background: rgb(19, 27, 115);
 }
 
-#chess_board_container{
-  margin-left:2%;
+
+#chess_board_container {
+  margin-left: 2%;
   border-style: double;
   height: 480px;
   width: 480px;
   border-color: white;
   position: relative;
   top: 0px;
- }
+}
 
- #A1{
-  background-color: rgb(209,139,71);
+#A1 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:0px;
+  left: 0px;
 }
 
-#A2{
-  background-color: rgb(255,206,158);
+#A2 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:0px;
+  left: 0px;
 }
 
-#A3{
-  background-color: rgb(209,139,71);
+#A3 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:0px;
+  left: 0px;
 }
 
-#A4{
-  background-color: rgb(255,206,158);
+#A4 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:0px;
+  left: 0px;
 }
 
-#A5{
-  background-color: rgb(209,139,71);
+#A5 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:0px;
+  left: 0px;
 }
 
-#A6{
-  background-color: rgb(255,206,158);
+#A6 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:0px;
+  left: 0px;
 }
 
-#A7{
-  background-color: rgb(209,139,71);
+#A7 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:0px;
+  left: 0px;
 }
 
-#A8{
-  background-color: rgb(255,206,158);
+#A8 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:0px;
+  left: 0px;
 }
 
-#B1{
-  background-color: rgb(255,206,158);
+#B1 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:60px;
+  left: 60px;
 }
 
-#B2{
-  background-color: rgb(209,139,71);
+#B2 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:60px;
+  left: 60px;
 }
 
-#B3{
-  background-color: rgb(255,206,158);
+#B3 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:60px;
+  left: 60px;
 }
 
-#B4{
-  background-color: rgb(209,139,71);
+#B4 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:60px;
+  left: 60px;
 }
 
-#B5{
-  background-color: rgb(255,206,158);
+#B5 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:60px;
+  left: 60px;
 }
 
-#B6{
-  background-color: rgb(209,139,71);
+#B6 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:60px;
+  left: 60px;
 }
 
-#B7{
-  background-color: rgb(255,206,158);
+#B7 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:60px;
+  left: 60px;
 }
 
-#B8{
-  background-color: rgb(209,139,71);
+#B8 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:60px;
+  left: 60px;
 }
 
-#C1{
-  background-color: rgb(209,139,71);
+#C1 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:120px;
+  left: 120px;
 }
 
-#C2{
-  background-color: rgb(255,206,158);
+#C2 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:120px;
+  left: 120px;
 }
 
-#C3{
-  background-color: rgb(209,139,71);
+#C3 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:120px;
+  left: 120px;
 }
 
-#C4{
-  background-color: rgb(255,206,158);
+#C4 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:120px;
+  left: 120px;
 }
 
-#C5{
-  background-color: rgb(209,139,71);
+#C5 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:120px;
+  left: 120px;
 }
 
-#C6{
-  background-color: rgb(255,206,158);
+#C6 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:120px;
+  left: 120px;
 }
 
-#C7{
-  background-color: rgb(209,139,71);
+#C7 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:120px;
+  left: 120px;
 }
 
-#C8{
-  background-color: rgb(255,206,158);
+#C8 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:120px;
+  left: 120px;
 }
 
-#D1{
-  background-color: rgb(255,206,158);
+#D1 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:180px;
+  left: 180px;
 }
 
-#D2{
-  background-color: rgb(209,139,71);
+#D2 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:180px;
+  left: 180px;
 }
 
-#D3{
-  background-color: rgb(255,206,158);
+#D3 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:180px;
+  left: 180px;
 }
 
-#D4{
-  background-color: rgb(209,139,71);
+#D4 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:180px;
+  left: 180px;
 }
 
-#D5{
-  background-color: rgb(255,206,158);
+#D5 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:180px;
+  left: 180px;
 }
 
-#D6{
-  background-color: rgb(209,139,71);
+#D6 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:180px;
+  left: 180px;
 }
 
-#D7{
-  background-color: rgb(255,206,158);
+#D7 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:180px;
+  left: 180px;
 }
 
-#D8{
-  background-color: rgb(209,139,71);
+#D8 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:180px;
+  left: 180px;
 }
 
-#E1{
-  background-color: rgb(209,139,71);
+#E1 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:240px;
+  left: 240px;
 }
 
-#E2{
-  background-color: rgb(255,206,158);
+#E2 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:240px;
+  left: 240px;
 }
 
-#E3{
-  background-color: rgb(209,139,71);
+#E3 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:240px;
+  left: 240px;
 }
 
-#E4{
-  background-color: rgb(255,206,158);
+#E4 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:240px;
+  left: 240px;
 }
 
-#E5{
-  background-color: rgb(209,139,71);
+#E5 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:240px;
+  left: 240px;
 }
 
-#E6{
-  background-color: rgb(255,206,158);
+#E6 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:240px;
+  left: 240px;
 }
 
-#E7{
-  background-color: rgb(209,139,71);
+#E7 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:240px;
+  left: 240px;
 }
 
-#E8{
-  background-color: rgb(255,206,158);
+#E8 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:240px;
+  left: 240px;
 }
 
-#F1{
-  background-color: rgb(255,206,158);
+#F1 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:300px;
+  left: 300px;
 }
 
-#F2{
-  background-color: rgb(209,139,71);
+#F2 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:300px;
+  left: 300px;
 }
 
-#F3{
-  background-color: rgb(255,206,158);
+#F3 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:300px;
+  left: 300px;
 }
 
-#F4{
-  background-color: rgb(209,139,71);
+#F4 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:300px;
+  left: 300px;
 }
 
-#F5{
-  background-color: rgb(255,206,158);
+#F5 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:300px;
+  left: 300px;
 }
 
-#F6{
-  background-color: rgb(209,139,71);
+#F6 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:300px;
+  left: 300px;
 }
 
-#F7{
-  background-color: rgb(255,206,158);
+#F7 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:300px;
+  left: 300px;
 }
 
-#F8{
-  background-color: rgb(209,139,71);
+#F8 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:300px;
+  left: 300px;
 }
 
-#G1{
-  background-color: rgb(209,139,71);
+#G1 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:360px;
+  left: 360px;
 }
 
-#G2{
-  background-color: rgb(255,206,158);
+#G2 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:360px;
+  left: 360px;
 }
 
-#G3{
-  background-color: rgb(209,139,71);
+#G3 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:360px;
+  left: 360px;
 }
 
-#G4{
-  background-color: rgb(255,206,158);
+#G4 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:360px;
+  left: 360px;
 }
 
-#G5{
-  background-color: rgb(209,139,71);
+#G5 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:360px;
+  left: 360px;
 }
 
-#G6{
-  background-color: rgb(255,206,158);
+#G6 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:360px;
+  left: 360px;
 }
 
-#G7{
-  background-color: rgb(209,139,71);
+#G7 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:360px;
+  left: 360px;
 }
 
-#G8{
-  background-color: rgb(255,206,158);
+#G8 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:360px;
+  left: 360px;
 }
 
-#H1{
-  background-color: rgb(255,206,158);
+#H1 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 0px;
-  left:420px;
+  left: 420px;
 }
 
-#H2{
-  background-color: rgb(209,139,71);
+#H2 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 60px;
-  left:420px;
+  left: 420px;
 }
 
-#H3{
-  background-color: rgb(255,206,158);
+#H3 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 120px;
-  left:420px;
+  left: 420px;
 }
 
-#H4{
-  background-color: rgb(209,139,71);
+#H4 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 180px;
-  left:420px;
+  left: 420px;
 }
 
-#H5{
-  background-color: rgb(255,206,158);
+#H5 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 240px;
-  left:420px;
+  left: 420px;
 }
 
-#H6{
-  background-color: rgb(209,139,71);
+#H6 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 300px;
-  left:420px;
+  left: 420px;
 }
 
-#H7{
-  background-color: rgb(255,206,158);
+#H7 {
+  background-color: rgb(255, 206, 158);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 360px;
-  left:420px;
+  left: 420px;
 }
 
-#H8{
-  background-color: rgb(209,139,71);
+#H8 {
+  background-color: rgb(209, 139, 71);
   height: 60px;
   width: 60px;
-  position:absolute;
+  position: absolute;
   bottom: 420px;
-  left:420px;
+  left: 420px;
 }

@@ -29,7 +29,7 @@ export default class King extends ChessPiece{
         this.isChecked = false; 
 
 
-        //set bishop image and set the set of pieces to be clear which is necessary to castle 
+        //set king image and set the set of pieces to be clear which is necessary to castle 
         if (this.color == "white")
             {
                 this.setImageName("/images/pieces/king_white.png");
@@ -166,6 +166,7 @@ export default class King extends ChessPiece{
                     //if the pos is of opposing color, add to takeable. don't do anything otherwise add to takeable
                     if(squareIterative.getPiece().getColor()!=this.getColor())
                     {
+                        console.log(squareIterative.getPiece());
                         takeableSquares.push(String.fromCharCode(i)+j);
                     }
                 }
