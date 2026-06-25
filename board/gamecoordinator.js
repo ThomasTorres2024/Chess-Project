@@ -161,8 +161,8 @@ export default class Coordinator
                     this.modifyBoard(oldSquareCoord,newSquareCoord);
 
                 }
-                console.log(this.chessBoardVar.toString())
-                console.log(this.roundManager.getCurrentRound())
+                // console.log(this.chessBoardVar.toString())
+                // console.log(this.roundManager.getCurrentRound())
             }
     
             //If there is a piece on the square show the userr where it can go 
@@ -203,6 +203,12 @@ export default class Coordinator
         this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
         this.isDrawnByStaleMate=this.chessBoardVar.getStalemate();
 
+        //update FEN state of the board 
+        this.chessBoardVar.update_fen_board_state()
+
+        //console.log(this.chessBoardVar.getBoardFEN());
+
+
         //Display the check if the pieces are checkmates 
         if(this.blackChecked)
         {
@@ -232,6 +238,7 @@ export default class Coordinator
         //Continue Game 
         else
         {
+
             //Undo any checks on pieces if they are no longer checked  
             if(!this.blackChecked)
             {
@@ -258,7 +265,7 @@ export default class Coordinator
         rook.setMoved(true);
         this.roundManager.addCastle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare, king, rook);  
     }
-
+    
     //Performs En Passant 
     enPassant(pawnOldSquare,pawnNewSquare,opposingPawnNewSquare)
     {

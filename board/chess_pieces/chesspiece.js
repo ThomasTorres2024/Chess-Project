@@ -135,11 +135,11 @@ export default class ChessPiece{
     {   
         if (this.color == "black")
         {
-            return this.whiteChar;
+            return this.blackChar;
         }
         else
         {
-            return this.blackChar;
+            return this.whiteChar;
         }
         
     }

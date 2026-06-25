@@ -41,9 +41,6 @@
   font-size: 13px;
   margin-left: auto;
   margin-right: auto;
-
-
-
 }
 
 /* width */
@@ -69,6 +66,23 @@
   border-bottom: double;
   border-radius: 3px;
   border-color: white;
+}
+
+#stockfish_image_slider {
+  margin-top: 10px;
+  width: calc(100%/3);
+  height:25px;
+  background-color: transparent ;
+}
+
+button{
+  background: none;
+  border: none;
+  justify-content: center;
+}
+
+#settings_toggle{
+  background-color: transparent;
 }
 
 .round_record_container {

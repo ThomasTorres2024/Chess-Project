@@ -166,7 +166,7 @@ export default class King extends ChessPiece{
                     //if the pos is of opposing color, add to takeable. don't do anything otherwise add to takeable
                     if(squareIterative.getPiece().getColor()!=this.getColor())
                     {
-                        console.log(squareIterative.getPiece());
+                        //console.log(squareIterative.getPiece());
                         takeableSquares.push(String.fromCharCode(i)+j);
                     }
                 }

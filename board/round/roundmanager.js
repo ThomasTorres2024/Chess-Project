@@ -3,11 +3,9 @@ import ChessBoard from "/board/chessboard.js";
 import CastleRound from "/board/round/castleround.js";
 
 //Essentially a doubly linked list of rounds
-export default class RoundManager
-{
+export default class RoundManager {
 
-    constructor(board)
-    {
+    constructor(board) {
         this.board = board;
 
         //head of the linked list
@@ -16,56 +14,52 @@ export default class RoundManager
 
         //tail of the linked list 
         this.currentColor = "white";
+        this.halfround_count_draw_condition = 0;
+        this.halfround_count = 0;
         this.count = 1;
 
     }
 
     //Multiple functions in this class do essentially the same thing so the code used to describe these activities can be nicely reduced 
-    createNewRoundCore()
-    {   
+    createNewRoundCore() {
         this.previousRound = this.roundHead;
+        this.halfround_count += 1;
 
         //change current color
-        if (this.currentColor == "black")
-        {   
-            //new round has started increment 1
+        if (this.currentColor == "black") {
             this.currentColor = "white";
-            this.count+=1;
         }
-        else
-        {
+        else {
+            //new round has started increment 1
+            this.count += 1;
             this.currentColor = "black";
         }
     }
 
     //Adds a castle move into the move order 
-    addCastle(kingOldSquare,kingNewSquare,rookOldSquare,rookNewSquare, king, rook)
-    {   
+    addCastle(kingOldSquare, kingNewSquare, rookOldSquare, rookNewSquare, king, rook) {
         //preps for making a new round
         this.createNewRoundCore();
         //Creates a new round just for castling 
-        this.roundHead = new CastleRound(this.previousRound, kingOldSquare,kingNewSquare, king, rookOldSquare, rookNewSquare, rook, this.board,this.count,this.turnColor)
+        this.roundHead = new CastleRound(this.previousRound, kingOldSquare, kingNewSquare, king, rookOldSquare, rookNewSquare, rook, this.board, this.count, this.turnColor)
     }
 
     //Adds an en passant into the move order 
-    
+
 
     //Adds rounds by creating current round, and linking it to previous round
-    addToRounds(oldSquare,newSquare,squareCoordobject)
-    {   
+    addToRounds(oldSquare, newSquare, squareCoordobject) {
 
-        const piece= squareCoordobject.getPiece();
+        const piece = squareCoordobject.getPiece();
 
         //if the round head hasn't been established yet, establish it
-        if(this.roundHead != null)
-        {
+        if (this.roundHead != null) {
             this.createNewRoundCore();
-            this.roundHead = new Round(this.previousRound,oldSquare,newSquare,this.board,this.count,this.currentColor,piece);
+            this.roundHead = new Round(this.previousRound, oldSquare, newSquare, this.board, this.count, this.currentColor, piece);
         }
-        else
-        {
+        else {
             //create prev round to start off, give it a pointer
-            this.previousRound = new Round(null,oldSquare,newSquare,this.board,this.count,"white",piece);
+            this.previousRound = new Round(null, oldSquare, newSquare, this.board, this.count, "white", piece);
             this.roundHead = this.previousRound;
             //change color 
             this.currentColor = "black";
@@ -74,26 +68,22 @@ export default class RoundManager
     }
 
     //Returns the string of the current round
-    getCurrentRoundString()
-    {
+    getCurrentRoundString() {
         return this.roundHead.toString();
     }
 
     //Returns the previous round
-    getPreviousRound()
-    {
+    getPreviousRound() {
         return this.previousRound;
     }
 
     //Reutrns the current round 
-    getCurrentRound()   
-    {
+    getCurrentRound() {
         return this.roundHead;
     }
 
     //Returns the current round color
-    getRoundColor()
-    {
+    getRoundColor() {
         return this.currentColor;
     }
 
