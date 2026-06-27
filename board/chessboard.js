@@ -845,7 +845,7 @@ export default class ChessBoard {
                 total_fen_string += "-"
             }
             else {
-                if (!king.kingSideRook.hasMoved) {
+                if (!king.kingSideRook.hasMoved && !king.kingSideRook.getTaken() ) {
                     if (king.kingSideRook.getColor() == "black") {
                         total_fen_string += "k"
                     }
@@ -854,7 +854,7 @@ export default class ChessBoard {
                     }
 
                 }
-                if (!king.queenSideRook.hasMoved) {
+                if (!king.queenSideRook.hasMoved && !king.queenSideRook.getTaken() ) {
                     if (king.kingSideRook.getColor() == "black") {
                         total_fen_string += "q"
                     }
@@ -873,7 +873,7 @@ export default class ChessBoard {
         let round_piece = this.roundManager.roundHead.getPiece();
         
 
-        if (round_piece.toString() == "♟" || round_piece.toString() == "♙") {
+        if (round_piece.getType() == "pawn" && round_piece.canBeTakenByEnPassant() ) {
         
 
             //get midpoint

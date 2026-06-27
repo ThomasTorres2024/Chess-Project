@@ -31,7 +31,7 @@ function main() {
         newChessBoard.setRoundManager(roundManager);
         console.log(newChessBoard.toString());
 
-        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay);
+        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay,false);
 
         //test for api here 
 

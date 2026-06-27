@@ -35,7 +35,7 @@ function pointToColor(point) {
     const file = point[0].charCodeAt(0);
     const rank = parseInt(point[1]) - 1;
 
-    //evaluate evben rank
+    //evaluate even rank
     if (rank % 2 == 0) {
 
         if (file % 2 > 0) {
@@ -286,7 +286,7 @@ function checkValidityPoints(piece, pointList, moveableSquares, takeableSquares)
     for (let i = 0; i < pointList.length; i++) {
         let file = pointList[i][0].charCodeAt(0);
         let rank = parseInt(pointList[i][1]);
-
+        
         //if bounds are valid
         if ((file < 73 && file > 64) && (rank > 0 && rank < 9)) {
             let squareIterative = piece.getBoard().getSquareAt(String.fromCharCode(file) + rank);

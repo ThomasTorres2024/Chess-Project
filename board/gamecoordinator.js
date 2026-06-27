@@ -12,14 +12,14 @@
 //Game coordinator coordinates all of the pieces to visually represent the game and as well represent
 //the rules of the game 
 
-import { convertApproximateCoordsToBoard,postChessApi } from "/board/boardutility.js"
+import { convertApproximateCoordsToBoard, postChessApi } from "/board/boardutility.js"
 import { BoardGraphicsManager } from "/board/graphics/boardfunctions.js";
 import RoundManager from "/board/round/roundmanager.js"
 import RoundDisplay from "/round_display/round_display_graphics.js";
 //Coordinates interactions between the chess board variable, graphics manager, and round manager 
 export default class Coordinator {
     //Sets cals for the chess board, the graphics manager for the board, the round manage,r and the round display manager 
-    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay) {
+    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay,stockfishEnabled) {
         this.chessBoardVar = chessBoardVar;
         this.boardGraphicsManager = boardGraphicsManager;
         this.roundManager = roundManager;
@@ -32,7 +32,7 @@ export default class Coordinator {
         this.isDrawnByStaleMate = false;
         this.isDrawnByRepetition = false;
 
-        this.stockfishEnabled = true;
+        this.stockfishEnabled = stockfishEnabled;
 
     }
 
@@ -148,7 +148,7 @@ export default class Coordinator {
             // console.log(this.roundManager.getCurrentRound())
         }
 
-        //If there is a piece on the square show the userr where it can go 
+        //If there is a piece on the square show the user where it can go 
         else if (square.getFilled() && (this.roundManager.getRoundColor() == square.getPiece().getColor())) {
             const piece = square.getPiece();
             //console.log(piece);
@@ -157,8 +157,6 @@ export default class Coordinator {
             this.boardGraphicsManager.visualizePieceScope(piece);
         }
     }
-
-
 
     //Standard move occurs on the board, takes piece's old square and new square and changes it 
     //The checking portion is done inside of the chessboard class, and is called when we move a piece,
@@ -238,6 +236,12 @@ export default class Coordinator {
                 this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getWhiteKing());
             }
         }
+
+        //temporary until i can get the enpassant func back up 
+        // this.chessBoardVar.update_fen_board_state();
+        // const gameFen = this.chessBoardVar.getBoardFEN()
+
+        // console.log(gameFen);
 
         //if stockfish is enabled, get corresponding info and update game panel with it 
         if (this.stockfishEnabled) {
