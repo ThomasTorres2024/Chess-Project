@@ -12,27 +12,27 @@
 //Game coordinator coordinates all of the pieces to visually represent the game and as well represent
 //the rules of the game 
 
-import {convertApproximateCoordsToBoard} from "/board/boardutility.js"
-import {BoardGraphicsManager} from "/board/graphics/boardfunctions.js";
+import { convertApproximateCoordsToBoard,postChessApi } from "/board/boardutility.js"
+import { BoardGraphicsManager } from "/board/graphics/boardfunctions.js";
 import RoundManager from "/board/round/roundmanager.js"
 import RoundDisplay from "/round_display/round_display_graphics.js";
 //Coordinates interactions between the chess board variable, graphics manager, and round manager 
-export default class Coordinator 
-{   
+export default class Coordinator {
     //Sets cals for the chess board, the graphics manager for the board, the round manage,r and the round display manager 
-    constructor(chessBoardVar, boardGraphicsManager, roundManager,roundDisplay)
-    {
-        this.chessBoardVar=chessBoardVar;
-        this.boardGraphicsManager=boardGraphicsManager;
-        this.roundManager=roundManager;
+    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay) {
+        this.chessBoardVar = chessBoardVar;
+        this.boardGraphicsManager = boardGraphicsManager;
+        this.roundManager = roundManager;
         this.roundDisplay = roundDisplay;
-        this.whiteChecked = false; 
+        this.whiteChecked = false;
         this.blackChecked = false;
         this.whiteCheckMated = false;
-        this.blackCheckMated = false; 
+        this.blackCheckMated = false;
         this.isDrawnByAgreement = false;
-        this.isDrawnByStaleMate = false; 
+        this.isDrawnByStaleMate = false;
         this.isDrawnByRepetition = false;
+
+        this.stockfishEnabled = true;
 
     }
 
@@ -45,36 +45,30 @@ export default class Coordinator
     I will also ad a function for the visualization part to ensure a move will not put the player in 
     check 
     */
-    processSquareMoveinput(pieceCoord)
-    {   
+    processSquareMoveinput(pieceCoord) {
 
         //get the square, and get the piece that we are either visualizing or want to visualize.
-        let square=this.chessBoardVar.getSquareAt(pieceCoord);
+        let square = this.chessBoardVar.getSquareAt(pieceCoord);
         let pieceVisualized = this.boardGraphicsManager.getIsVisualized();
-        
+
         //Display a victory message at the end for now it'll just be a message in console 
-        if(this.blackCheckMated)
-        {
+        if (this.blackCheckMated) {
             console.log("White wins.");
         }
         //White victory message 
-        else if(this.whiteCheckMated)
-        {
+        else if (this.whiteCheckMated) {
             console.log("Black wins.");
         }
 
-        else if(this.isDrawnByStaleMate)
-        {
+        else if (this.isDrawnByStaleMate) {
             console.log("Drawn by stalemate.");
         }
 
-        else if(this.isDrawnByRepetition)
-        {
+        else if (this.isDrawnByRepetition) {
             console.log("Drawn by 3 fold repetition");
         }
 
-        else if(this.isDrawnByAgreement)
-        {
+        else if (this.isDrawnByAgreement) {
             console.log("Drawn by agreement");
         }
 
@@ -85,89 +79,77 @@ export default class Coordinator
         //     console.log(this.roundManager.getRoundColor());
         // }
         //a piece is already been displayed, check if the coordinate clicked is 
-        else if(pieceVisualized && this.boardGraphicsManager.checkIfMoveableOrTakeable(pieceCoord))
-            {   
-                const oldSquareCoord = this.boardGraphicsManager.getHighlightedSquare();
-                let piece = this.chessBoardVar.getSquareAt(oldSquareCoord).getPiece();
-                const newSquareCoord = pieceCoord;
-                this.boardGraphicsManager.devisualizePiece();
-    
-                //Check if the piece is a king or a pawn, there are unique conditions that need to be met for both of these types
-                //if king, check if chosen move is a castle, otherwise the program will default to its normal routine
-                if(piece.getType() == "king")
-                {
-                    let king = piece; 
-                    
-                    //Moves the king 
-                    //if the king hasn't moved check if move was `castle` move 
-                    if(!king.getMoved() && (newSquareCoord[0] == "G" || newSquareCoord[0] == "C"))
-                    {   
-                        //set rank val
-                        let rank = 1;
-                        let oldFileRook = "A"
-                        let newFileRook = "D";
-                        if (king.getColor() == "black")
-                        {
-                            rank = 8;
-                        }
-    
-                        if(newSquareCoord[0] == "G")
-                        {
-                            oldFileRook = "H";
-                            newFileRook = "F";
-                        }
-                        
-                        let oldRookSquare = oldFileRook+rank;
-                        let newRookSquare = newFileRook+rank;
-                        let rook = this.chessBoardVar.getSquareAt(oldRookSquare).getPiece();
-                        console.log(oldRookSquare);
-                        this.castle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare,king,rook);
+        else if (pieceVisualized && this.boardGraphicsManager.checkIfMoveableOrTakeable(pieceCoord)) {
+            const oldSquareCoord = this.boardGraphicsManager.getHighlightedSquare();
+            let piece = this.chessBoardVar.getSquareAt(oldSquareCoord).getPiece();
+            const newSquareCoord = pieceCoord;
+            this.boardGraphicsManager.devisualizePiece();
+
+            //Check if the piece is a king or a pawn, there are unique conditions that need to be met for both of these types
+            //if king, check if chosen move is a castle, otherwise the program will default to its normal routine
+            if (piece.getType() == "king") {
+                let king = piece;
+
+                //Moves the king 
+                //if the king hasn't moved check if move was `castle` move 
+                if (!king.getMoved() && (newSquareCoord[0] == "G" || newSquareCoord[0] == "C")) {
+                    //set rank val
+                    let rank = 1;
+                    let oldFileRook = "A"
+                    let newFileRook = "D";
+                    if (king.getColor() == "black") {
+                        rank = 8;
                     }
 
-                    //Moves king if it has not moved before 
-                    else
-                    {
-                        this.modifyBoard(oldSquareCoord,newSquareCoord);
+                    if (newSquareCoord[0] == "G") {
+                        oldFileRook = "H";
+                        newFileRook = "F";
                     }
+
+                    let oldRookSquare = oldFileRook + rank;
+                    let newRookSquare = newFileRook + rank;
+                    let rook = this.chessBoardVar.getSquareAt(oldRookSquare).getPiece();
+                    this.castle(oldSquareCoord, newSquareCoord, oldRookSquare, newRookSquare, king, rook);
                 }
 
-                //Check if piece is pawn, try and determine if the piece can do en passant or something 
-                else if(piece.getType()=="pawn")
-                {   
-                    let pawnCoords = piece.getBoardSquare();
-
-                    let rank = newSquareCoord[1];
-                    //Check for Promotion
-                    if(rank == "1" || rank == "8")
-                    {
-                        this.chessBoardVar.promoPawnToQueen(pawnCoords,newSquareCoord,"queen");
-                    }
-
-                    //if there are squares that can be enPassanted to
-                    else if(piece.getEnPassantSquares().length > 0 && piece.getEnPassantSquares()[0] == newSquareCoord)
-                    {
-                        this.chessBoardVar.enPassant(piece);
-                    }
-
-                    //en passant for white 
-                    this.modifyBoard(pawnCoords,newSquareCoord);
-                    
+                //Moves king if it has not moved before 
+                else {
+                    this.modifyBoard(oldSquareCoord, newSquareCoord);
                 }
-
-                //Moves piece types which are not kings 
-                else
-                {
-                    //Move Piece
-                    this.modifyBoard(oldSquareCoord,newSquareCoord);
-
-                }
-                // console.log(this.chessBoardVar.toString())
-                // console.log(this.roundManager.getCurrentRound())
             }
-    
-            //If there is a piece on the square show the userr where it can go 
-        else if(square.getFilled() && (this.roundManager.getRoundColor() == square.getPiece().getColor()))
-        {
+
+            //Check if piece is pawn, try and determine if the piece can do en passant or something 
+            else if (piece.getType() == "pawn") {
+                let pawnCoords = piece.getBoardSquare();
+
+                let rank = newSquareCoord[1];
+                //Check for Promotion
+                if (rank == "1" || rank == "8") {
+                    this.chessBoardVar.promoPawnToQueen(pawnCoords, newSquareCoord, "queen");
+                }
+
+                //if there are squares that can be enPassanted to
+                else if (piece.getEnPassantSquares().length > 0 && piece.getEnPassantSquares()[0] == newSquareCoord) {
+                    this.chessBoardVar.enPassant(piece);
+                }
+
+                //en passant for white 
+                this.modifyBoard(pawnCoords, newSquareCoord);
+
+            }
+
+            //Moves piece types which are not kings 
+            else {
+                //Move Piece
+                this.modifyBoard(oldSquareCoord, newSquareCoord);
+
+            }
+            // console.log(this.chessBoardVar.toString())
+            // console.log(this.roundManager.getCurrentRound())
+        }
+
+        //If there is a piece on the square show the userr where it can go 
+        else if (square.getFilled() && (this.roundManager.getRoundColor() == square.getPiece().getColor())) {
             const piece = square.getPiece();
             //console.log(piece);
             //UNCOMMENT FOR NORMAL FUNCTIONALITY 
@@ -181,106 +163,128 @@ export default class Coordinator
     //Standard move occurs on the board, takes piece's old square and new square and changes it 
     //The checking portion is done inside of the chessboard class, and is called when we move a piece,
     //once it is done executing we update the black and white checked variables
-    modifyBoard(oldSquareCoord,newSquareCoord)
-    {
-        this.chessBoardVar.movePiece(oldSquareCoord,newSquareCoord);
+    modifyBoard(oldSquareCoord, newSquareCoord) {
+
+        let pieceTaken = false;
+        let pawnMoved = false;
+
+        //determine if a piece exists on new square coord and if it was taken 
+        if (this.chessBoardVar.getSquareAt(newSquareCoord).getPiece()) {
+            this.chessBoardVar.getSquareAt(newSquareCoord).getPiece()
+            pieceTaken = true;
+        }
+        else if (this.chessBoardVar.getSquareAt(oldSquareCoord).getPiece().getType() == "pawn") {
+            pawnMoved = true;
+        }
+
+        this.chessBoardVar.movePiece(oldSquareCoord, newSquareCoord);
 
         //determine if black or white is checked after this move
-        this.roundManager.addToRounds(oldSquareCoord,newSquareCoord,this.chessBoardVar.getSquareAt(newSquareCoord));
+        this.roundManager.addToRounds(oldSquareCoord, newSquareCoord, this.chessBoardVar.getSquareAt(newSquareCoord));
         const move = this.roundManager.getCurrentRound();
 
         //adds the move just made to the board, where move is the move string and the round manager is a color corresponding to the color
-        this.roundDisplay.addMoveStringDisplay(move,this.roundManager.getRoundColor())
-        
+        this.roundDisplay.addMoveStringDisplay(move, this.roundManager.getRoundColor())
+
         //COMMENT OUT FOR NORMAL FUNCTIONALITY
         //update what moves can be made for the next player and check status 
         let roundColor = this.chessBoardVar.getSquareAt(newSquareCoord).getPiece().getColor();
         this.chessBoardVar.postRound(roundColor);
 
-        this.blackChecked=this.chessBoardVar.getBlackKingChecked();
-        this.blackCheckMated=this.chessBoardVar.getBlackCheckMated();
-        this.whiteCheckMated=this.chessBoardVar.getWhiteCheckMated();
-        this.whiteChecked=this.chessBoardVar.getWhiteKingChecked();
-        this.isDrawnByStaleMate=this.chessBoardVar.getStalemate();
+        this.blackChecked = this.chessBoardVar.getBlackKingChecked();
+        this.blackCheckMated = this.chessBoardVar.getBlackCheckMated();
+        this.whiteCheckMated = this.chessBoardVar.getWhiteCheckMated();
+        this.whiteChecked = this.chessBoardVar.getWhiteKingChecked();
+        this.isDrawnByStaleMate = this.chessBoardVar.getStalemate();
 
-        //update FEN state of the board 
-        this.chessBoardVar.update_fen_board_state()
-
-        //console.log(this.chessBoardVar.getBoardFEN());
-
+        //check if the piece on the new square is a pawn. if it was a pawn move or a capture.
+        //if either ocurred, then for FEN, the half round counter needs to be set to 0, otherwise increment 
+        if (pawnMoved || pieceTaken) {
+            this.chessBoardVar.setHalfRound(0);
+        }
+        else {
+            this.chessBoardVar.incrementHalfRound();
+        }
 
         //Display the check if the pieces are checkmates 
-        if(this.blackChecked)
-        {
+        if (this.blackChecked) {
             console.log("Black checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getBlackKing());
         }
-        else if(this.whiteChecked)
-        {
+        else if (this.whiteChecked) {
             console.log("White checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getWhiteKing());
         }
 
         //Game Ending State Functions and continue game part
-        if(this.isDrawnByStaleMate)
-        {
+        if (this.isDrawnByStaleMate) {
             console.log("Game over by stalemate.")
         }
-        else if(this.blackCheckMated)
-        {
+        else if (this.blackCheckMated) {
             console.log("Game over by black being checkmated")
         }
-        else if(this.whiteCheckMated)
-        {
+        else if (this.whiteCheckMated) {
             console.log("Game over by white being checkmated")
         }
 
         //Continue Game 
-        else
-        {
+        else {
 
             //Undo any checks on pieces if they are no longer checked  
-            if(!this.blackChecked)
-            {
+            if (!this.blackChecked) {
                 this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getBlackKing());
             }
-            else if(!this.whiteChecked)
-            {
+            else if (!this.whiteChecked) {
                 this.boardGraphicsManager.dehighlightCheckedPiece(this.chessBoardVar.getWhiteKing());
+            }
+        }
+
+        //if stockfish is enabled, get corresponding info and update game panel with it 
+        if (this.stockfishEnabled) {
+            try {
+
+                //update fen and then get the resulting fen 
+                this.chessBoardVar.update_fen_board_state();
+                const gameFen = this.chessBoardVar.getBoardFEN()
+
+                console.log(gameFen);
+
+                postChessApi({ fen: gameFen }).then((data) => {
+                    console.log(data);
+                });
+
+            } catch (error) {
+                // Code to handle the error
+                console.error("An error occurred:", error.message);
             }
         }
 
     }
 
     //Castles, performs a castle, adds castle info to the round, and add to display
-    castle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare,king,rook)
-    {   
-        console.log(rook);
+    castle(oldSquareCoord, newSquareCoord, oldRookSquare, newRookSquare, king, rook) {
 
         //change board contents 
-        this.chessBoardVar.castle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare,king.getImageName(),rook.getImageName());
-        
+        this.chessBoardVar.castle(oldSquareCoord, newSquareCoord, oldRookSquare, newRookSquare, king.getImageName(), rook.getImageName());
+
         //set king moved and castle round 
         king.setMoved(true);
         rook.setMoved(true);
-        this.roundManager.addCastle(oldSquareCoord,newSquareCoord,oldRookSquare,newRookSquare, king, rook);  
+        this.roundManager.addCastle(oldSquareCoord, newSquareCoord, oldRookSquare, newRookSquare, king, rook);
     }
-    
+
     //Performs En Passant 
-    enPassant(pawnOldSquare,pawnNewSquare,opposingPawnNewSquare)
-    {
+    enPassant(pawnOldSquare, pawnNewSquare, opposingPawnNewSquare) {
 
     }
 
     //Reverses the events of the previous round on the board 
-    reverseRound()
-    {
+    reverseRound() {
 
     }
 
     //Advanced a round if the displayed round on the board is behind the current round 
-    advanceRound()
-    {
+    advanceRound() {
 
     }
 }

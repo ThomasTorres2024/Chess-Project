@@ -44,6 +44,8 @@ export default class ChessBoard {
         this.whiteIsCheckMated = false;
         this.stalemate = false;
 
+        this.halfRoundCounterSincePawnMove = 0; 
+
         this.whitePieces = new Set();
         this.blackPieces = new Set();
 
@@ -759,6 +761,29 @@ export default class ChessBoard {
         return this.stalemate;
     }
 
+    /**
+     * Returns the number of movies since pawn move or piece being captured
+     * @param {val} val - Sets the value of the half round 
+     * @returns The 
+     */
+    setHalfRound(val){
+        this.halfRoundCounterSincePawnMove=val; 
+    }
+
+    /**
+     * Increments value of the half round counter by 1 
+     */
+    incrementHalfRound(){
+        this.halfRoundCounterSincePawnMove+=1
+    }
+
+    /**
+     * Returns the number of movies since pawn move or piece being captured
+     * @returns The 
+     */
+    getHalfRound(){
+        return this.halfRoundCounterSincePawnMove
+    }
 
     /**
      * The board state variable for the FEN board state is updated
@@ -873,12 +898,11 @@ export default class ChessBoard {
        
         //handle the half round portion
 
-        total_fen_string += " " + " ? ";
+        total_fen_string += " " +  this.halfRoundCounterSincePawnMove +" ";
 
         //handle full round portion
         total_fen_string += this.roundManager.count;
 
-        console.log(total_fen_string)
         this.board_fen = total_fen_string;
 
     }
