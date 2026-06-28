@@ -19,7 +19,7 @@ import RoundDisplay from "/round_display/round_display_graphics.js";
 //Coordinates interactions between the chess board variable, graphics manager, and round manager 
 export default class Coordinator {
     //Sets cals for the chess board, the graphics manager for the board, the round manage,r and the round display manager 
-    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay,stockfishEnabled) {
+    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay, stockfishEnabled) {
         this.chessBoardVar = chessBoardVar;
         this.boardGraphicsManager = boardGraphicsManager;
         this.roundManager = roundManager;
@@ -31,6 +31,9 @@ export default class Coordinator {
         this.isDrawnByAgreement = false;
         this.isDrawnByStaleMate = false;
         this.isDrawnByRepetition = false;
+
+        this.white_chance=50;
+        this.black_chance=50;
 
         this.stockfishEnabled = stockfishEnabled;
 
@@ -51,17 +54,27 @@ export default class Coordinator {
         let square = this.chessBoardVar.getSquareAt(pieceCoord);
         let pieceVisualized = this.boardGraphicsManager.getIsVisualized();
 
+
         //Display a victory message at the end for now it'll just be a message in console 
         if (this.blackCheckMated) {
             console.log("White wins.");
+            //play checked sound 
+            let checkSound = new Audio("/sound/Check.mp3");
+            checkSound.play();
         }
         //White victory message 
         else if (this.whiteCheckMated) {
             console.log("Black wins.");
+            //play checked sound 
+            let checkSound = new Audio("/sound/Check.mp3");
+            checkSound.play();
         }
 
         else if (this.isDrawnByStaleMate) {
             console.log("Drawn by stalemate.");
+            //play checked sound 
+            let checkSound = new Audio("/sound/Check.mp3");
+            checkSound.play();
         }
 
         else if (this.isDrawnByRepetition) {
@@ -84,6 +97,10 @@ export default class Coordinator {
             let piece = this.chessBoardVar.getSquareAt(oldSquareCoord).getPiece();
             const newSquareCoord = pieceCoord;
             this.boardGraphicsManager.devisualizePiece();
+
+
+            let moveSound = new Audio("/sound/Move.mp3");
+            moveSound.play();
 
             //Check if the piece is a king or a pawn, there are unique conditions that need to be met for both of these types
             //if king, check if chosen move is a castle, otherwise the program will default to its normal routine
@@ -208,10 +225,14 @@ export default class Coordinator {
         if (this.blackChecked) {
             console.log("Black checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getBlackKing());
+            let checkSound = new Audio("/sound/Check.mp3");
+            checkSound.play();
         }
         else if (this.whiteChecked) {
             console.log("White checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getWhiteKing());
+            let checkSound = new Audio("/sound/Check.mp3");
+            checkSound.play();
         }
 
         //Game Ending State Functions and continue game part
@@ -255,6 +276,13 @@ export default class Coordinator {
 
                 postChessApi({ fen: gameFen }).then((data) => {
                     console.log(data);
+                    this.white_chance=data.winChance;
+                    this.black_chance=100-this.white_chance;
+
+                    this.boardGraphicsManager.modifyEvaluationBar(this.white_chance,this.black_chance);
+
+                    //modify board eval (evaluation) bar
+
                 });
 
             } catch (error) {

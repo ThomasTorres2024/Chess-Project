@@ -1,17 +1,15 @@
 import ChessPiece from "/board/chess_pieces/chesspiece.js"
 import ChessBoard from "/board/chessboard.js"
-import {convertBoardPositionCartesian} from "/board/boardutility.js"
+import { convertBoardPositionCartesian } from "/board/boardutility.js"
 import { pointToColor } from "/board/boardutility.js";
 
-class BoardGraphicsManager
-{   
+class BoardGraphicsManager {
     //only needs the board 
-    constructor(board,darkSquareColor,lightSquareColor,highlightLight,highlightDark)
-    {
-        this.board=board;
+    constructor(board, darkSquareColor, lightSquareColor, highlightLight, highlightDark) {
+        this.board = board;
 
         //Vars for visualizing pieces on the site 
-        this.isVisualizing=false;
+        this.isVisualizing = false;
         this.visualizedPiece = null;
         this.visualizedTakeableSquares = [];
         this.visualizedMoveableSquares = [];
@@ -27,16 +25,14 @@ class BoardGraphicsManager
     }
 
     //adds a chess piece to the board at a point
-    addPieceToBoard(point,imgsrc)
-    {
+    addPieceToBoard(point, imgsrc) {
         let pieceImage = document.getElementById(point);
         pieceImage.innerHTML = `<img src="${imgsrc}">`;
     }
 
     //Draws pieces onto a blank board
     //Assumes that every square has at most 1 piece
-    generateBoard()
-    {
+    generateBoard() {
         //get map of pieces and iterate through it, check if point has a piece, if it has a
         //piece get the piece's img and then add it to the board. 
 
@@ -47,16 +43,14 @@ class BoardGraphicsManager
         let boardKeysNode = boardKeys.next();
 
         //go through the map iterator as long as the value is defined
-        while(boardKeysNode.value != null)
-        {   
+        while (boardKeysNode.value != null) {
             //get piece value and the square value
             const pieceStr = boardKeysNode.value;
             const square = this.getBoard().getSquareAt(pieceStr);
 
             //check if board square is filled, if it is filled then add a piece to it with its properties 
-            if(boardMap.get(pieceStr).getFilled())
-            {   
-                this.addPieceToBoard(square.getBoardCoords(),square.getPiece().getImageName())
+            if (boardMap.get(pieceStr).getFilled()) {
+                this.addPieceToBoard(square.getBoardCoords(), square.getPiece().getImageName())
             }
 
             //get next key
@@ -68,12 +62,10 @@ class BoardGraphicsManager
     //Piece Scope Visualizers 
 
     //Visualizes the takeable and moveable squares of a piece.
-    visualizePieceScope(piece)
-    {
+    visualizePieceScope(piece) {
         //if a piece has already been visualized, its squares that have changed the board must be removed 
-        if(this.getIsVisualized())
-        {
-            this.devisualizePiece();    
+        if (this.getIsVisualized()) {
+            this.devisualizePiece();
         }
 
         this.setHighlightedSquare(piece.getBoardSquare())
@@ -85,11 +77,10 @@ class BoardGraphicsManager
 
         this.getVisualizedMoveableSquares().forEach(this.hightlightMoveableSquare);
 
-        for(let i = 0; i< this.getVisualizedTakeableSquares().length  ; i++)
-        {   
+        for (let i = 0; i < this.getVisualizedTakeableSquares().length; i++) {
             let point = this.getVisualizedTakeableSquares()[i];
             let imageDir = piece.getBoard().getSquareAt(point).getPiece().getTakeableName();
-            this.highlightTakeableSquare(point,imageDir);
+            this.highlightTakeableSquare(point, imageDir);
         }
 
         this.setIsVisualized(true);
@@ -97,24 +88,21 @@ class BoardGraphicsManager
     }
 
     //Removes the visulized piece's scope from the board
-    devisualizePiece()
-    {   
+    devisualizePiece() {
         //Remove Highlight
         this.removeHighlight()
 
         //get rid of moveable dots 
 
-        for(let i = 0; i<this.getVisualizedMoveableSquares().length;i++)
-        {   
+        for (let i = 0; i < this.getVisualizedMoveableSquares().length; i++) {
             const square = this.getVisualizedMoveableSquares()[i];
             this.removePieceImageFromBoard(square);
         }
 
-        for(let j = 0; j<this.getVisualizedTakeableSquares().length;j++)
-        {
+        for (let j = 0; j < this.getVisualizedTakeableSquares().length; j++) {
             const square = this.getVisualizedTakeableSquares()[j];
             const pic = this.getBoard().getSquareAt(square).getPiece().getImageName();
-            this.addPieceToBoard(square,pic);
+            this.addPieceToBoard(square, pic);
         }
 
         //after cleaning everything up, remove the piece which is being visualized. 
@@ -129,69 +117,60 @@ class BoardGraphicsManager
     }
 
     //Checks if any given square on the board is within the set of moveable or takebale squares
-    checkIfMoveableOrTakeable(point)
-    {   
+    checkIfMoveableOrTakeable(point) {
 
         //check over moveable 
-        for(let i = 0; i<this.visualizedMoveableSquares.length;i++ )
-        {   
+        for (let i = 0; i < this.visualizedMoveableSquares.length; i++) {
 
-            if (point==this.visualizedMoveableSquares[i])
-            {
-                return true 
+            if (point == this.visualizedMoveableSquares[i]) {
+                return true
             }
         }
 
         //check over takeable 
-        for(let i = 0; i<this.visualizedTakeableSquares.length;i++ )
-        {
+        for (let i = 0; i < this.visualizedTakeableSquares.length; i++) {
 
-            if (point==this.visualizedTakeableSquares[i])
-            {
-                return true 
+            if (point == this.visualizedTakeableSquares[i]) {
+                return true
             }
         }
 
         //means that the point wasn't found in either of the sets. 
-        return false 
+        return false
     }
 
     //Removes piece from the board
-    removePieceImageFromBoard(point)
-    {
+    removePieceImageFromBoard(point) {
         let pieceImage = document.getElementById(point);
         pieceImage.innerHTML = "";
 
     }
 
     //Moves piece to new square 
-    swapPiece(oldPoint,newPoint,newImgSrc)
-    {
+    swapPiece(oldPoint, newPoint, newImgSrc) {
         this.removePieceImageFromBoard(oldPoint);
-        this.addPieceToBoard(newPoint,newImgSrc)
+        this.addPieceToBoard(newPoint, newImgSrc)
+
     }
 
     //represents a piece taking another piece
-    pieceTakesPiece(oldPoint, newPoint, newImgSrc)
-    {   
+    pieceTakesPiece(oldPoint, newPoint, newImgSrc) {
         //free up old point 
         this.removePieceImageFromBoard(oldPoint);
         this.removePieceImageFromBoard(newPoint);
 
         //get the img at point
-        this.addPieceToBoard(newPoint,newImgSrc)
+        this.addPieceToBoard(newPoint, newImgSrc)
     }
 
     //Changes the color of the square when a point is selected 
-    hightlightMoveableSquare(point)
-    {
+    hightlightMoveableSquare(point) {
         let pieceImage = document.getElementById(point);
         pieceImage.innerHTML = `<img src="/images/board_events/highlight_moveable_square.png">`;
     }
 
     //Removes highlight from point
-    removeHighlight()
-    {   //locally store highlighted square and remove it from the global program immediately 
+    removeHighlight() {   //locally store highlighted square and remove it from the global program immediately 
         let highlightedSquare = this.getHighlightedSquare();
         this.setHighlightedSquare(null);
 
@@ -199,101 +178,122 @@ class BoardGraphicsManager
 
         //check if the square is light or dark, and then the color will be changed on the board 
         let color = `rgb(${this.darkSquareColor[0]},${this.darkSquareColor[1]},${this.darkSquareColor[2]})`;
-        if((highLightedColor == "light"))
-        {
+        if ((highLightedColor == "light")) {
             color = `rgb(${this.lightSquareColor[0]},${this.lightSquareColor[1]},${this.lightSquareColor[2]})`;
         }
-        
+
         //Changes color at last 
         document.getElementById(highlightedSquare).style.backgroundColor = color;
     }
 
     //Highlights squares with takeable pieces
-    highlightTakeableSquare(point,highlightImage)
-    {   
+    highlightTakeableSquare(point, highlightImage) {
         let pieceImage = document.getElementById(point);
         pieceImage.innerHTML = `<img src="${highlightImage}">`;
     }
 
     //highlights point light or dark green depending upon its darkness or brightness 
-    highlightSquare(point)
-    {   
+    highlightSquare(point) {
         //color is light by default.
         let color = `rgb(${this.highlightLight[0]},${this.highlightLight[1]},${this.highlightLight[2]})`;
 
         //if the color is dark change the highlight color to dark. 
-        if(pointToColor(point) == "dark" )
-        {
+        if (pointToColor(point) == "dark") {
             color = `rgb(${this.highlightDark[0]},${this.highlightDark[1]},${this.highlightDark[2]})`;
-        } 
- 
+        }
+
         document.getElementById(point).style.backgroundColor = color;
     }
-    
+
     /**
      * Highlights king on the board if it is checked 
      * @param {King Piece} king 
      */
-    highlightCheckedPiece(king)
-    {   
+    highlightCheckedPiece(king) {
         //make sure that the king is not null and that it is a king type 
-        if(king && king.getType() == "king")
-        {
+        if (king && king.getType() == "king") {
             //get the color 
             let kingColor = king.getColor();
             let coords = king.getBoardSquare();
 
             let imgSrc = "/images/board_events/";
-            if(kingColor == "black")
-            {
-                imgSrc+="king_black_checked"
+            if (kingColor == "black") {
+                imgSrc += "king_black_checked"
             }
-            else
-            {
-                imgSrc+="king_white_checked";
+            else {
+                imgSrc += "king_white_checked";
             }
-            imgSrc+=".png"
+            imgSrc += ".png"
 
             //determine the image 
-            this.swapPiece(coords,coords,imgSrc);
-    
+            this.swapPiece(coords, coords, imgSrc);
+
         }
-        else
-        {
+        else {
             console.log("ERROR. Attempted to highlight a king when the piece was not a king")
         }
+
+    }
+
+    /**
+     * Set evaluation bar 
+     * @param {Chance of white winning} white_chance 
+     * @param {Chance of black winning} black_chance 
+     */
+    modifyEvaluationBar(white_chance, black_chance) {
+
+
+        //sheet.insertRule("#white_win_percent { height: 50 %; background - color: rgb(0 0 30 / 30 %);;} ", sheet.cssRules.length);
+
+        const sheet = document.styleSheets[0];
+        const rules = sheet.cssRules || sheet.rules; 
+
+        let count=0;
+
+        for (let i = 0; i < rules.length; i++) {
+            if (rules[i].selectorText === "#white_win_percent") {
+                rules[i].style.height = white_chance+"%";
+                count+=1;
+            }
+            else if(rules[i].selectorText === "#black_win_percent"){
+                rules[i].style.height = black_chance+"%";
+                count+=1;
+            }
+
+            if(count>=2){
+                break;
+            }
+        }
+
+        // 3. Delete a rule by its index position
+        // sheet.deleteRule(0);
     }
 
     /**
      * Dehighlights king on the board if it is no longer checked 
      * @param {King Piece} king 
      */
-    dehighlightCheckedPiece(king)
-    {   
+    dehighlightCheckedPiece(king) {
         //make sure that the king is not null and that it is a king type 
-        if(king && king.getType() == "king")
-        {
+        if (king && king.getType() == "king") {
             //get the color 
             let kingColor = king.getColor();
             let coords = king.getBoardSquare();
 
             let imgSrc = "/images/pieces/";
-            if(kingColor == "black")
-            {
-                imgSrc+="king_black"
+            if (kingColor == "black") {
+                imgSrc += "king_black"
             }
-            else
-            {
-                imgSrc+="king_white";
+            else {
+                imgSrc += "king_white";
             }
-            imgSrc+=".png"
+            imgSrc += ".png"
 
             //determine the image 
-            this.swapPiece(coords,coords,imgSrc);
-    
+            this.swapPiece(coords, coords, imgSrc);
+
         }
-        else
-        {
+        else {
             console.log("ERROR. Attempted to highlight a king when the piece was not a king")
         }
     }
@@ -301,74 +301,63 @@ class BoardGraphicsManager
     //Getters 
 
     //Returns square highlighted when a piece is selected by a user 
-    getHighlightedSquare()
-    {   
+    getHighlightedSquare() {
         return this.highlightedSquare;
     }
 
     //Returns the chess board object 
-    getBoard()
-    {
+    getBoard() {
         return this.board;
     }
 
     //Returns the piece which is being visualized 
-    getVisualizedPiece()
-    {
+    getVisualizedPiece() {
         return this.visualizedPiece;
     }
 
     //returns if the piece's scope has been visualized
-    getIsVisualized()
-    {
+    getIsVisualized() {
         return this.isVisualizing;
     }
 
     //Returns the visualized moveable squares 
-    getVisualizedMoveableSquares()
-    {
+    getVisualizedMoveableSquares() {
         return this.visualizedMoveableSquares;
     }
 
     //Returns the takeable squares
-    getVisualizedTakeableSquares()
-    {
+    getVisualizedTakeableSquares() {
         return this.visualizedTakeableSquares;
     }
 
     //Setters
 
     //Sets the visualized moveable squares 
-    setVisualizedMoveableSquares(visualizedMoveableSquares)
-    {
+    setVisualizedMoveableSquares(visualizedMoveableSquares) {
         this.visualizedMoveableSquares = visualizedMoveableSquares;
     }
-    
+
     //Sets the takeable squares
-    setVisualizedTakeableSquares(visualizedTakeableSquares)
-    {
+    setVisualizedTakeableSquares(visualizedTakeableSquares) {
         this.visualizedTakeableSquares = visualizedTakeableSquares;
     }
 
     //Sets the new highlighted square
-    setHighlightedSquare(highlightedSquare)
-    {
-        this.highlightedSquare=highlightedSquare;
+    setHighlightedSquare(highlightedSquare) {
+        this.highlightedSquare = highlightedSquare;
     }
 
     //Changes piece which is being visualized 
-    setVisualizedPiece(visulizedPiece)
-    {
+    setVisualizedPiece(visulizedPiece) {
         this.visulizedPiece = visulizedPiece;
     }
 
     //changes the status of visualization 
-    setIsVisualized(isVisualizing)
-    {
-        this.isVisualizing=isVisualizing;
+    setIsVisualized(isVisualizing) {
+        this.isVisualizing = isVisualizing;
     }
 
 
 }
 
-export{BoardGraphicsManager}
+export { BoardGraphicsManager }

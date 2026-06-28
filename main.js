@@ -31,7 +31,8 @@ function main() {
         newChessBoard.setRoundManager(roundManager);
         console.log(newChessBoard.toString());
 
-        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay,false);
+        let enableStockFish=true;
+        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay,enableStockFish);
 
         //test for api here 
 

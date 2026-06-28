@@ -12,17 +12,60 @@
   float: left;
 }
 
+#stockfish_eval_bar {
+  display: flex;
+  flex-direction: column;
+  width: 25px;
+  height: 450px;
+  border-radius: 3px;
+  border-color: white;
+  border-style: double;
+  border-right: none;
+}
+
+#stockfish_descriptor {
+  text-decoration: none;
+  /* Removes the underline */
+  color: white;
+  font-family: 'Lucida Console';
+  font-size: 13px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+#white_win_percent {
+  height: 50%;
+  background-color: rgb(0 0 30 / 30%);
+  ;
+}
+
+#black_win_percent {
+  height: 50%;
+  background-color: rgb(255 255 255 / 20%);
+  ;
+}
+
+#right_side {
+  margin-top: 1.5%;
+  margin-left: 2%;
+  display: flex;
+  flex-direction: row;
+
+  justify-content: flex-start;
+  height: 425px;
+  width: 300px;
+}
+
 #round_record {
   display: flex;
   flex-direction: column;
   border-style: double;
   justify-content: flex-start;
   border-radius: 3px;
-  margin-left: 3%;
-  margin-top: 2%;
   border-color: white;
   height: 450px;
-  width: 250px;
+  width: 300px;
 
   overflow-y: scroll;
   overflow-x: hidden;
@@ -62,7 +105,7 @@
   display: flex;
   justify-content: space-around;
   height: 50px;
-  
+
   border-bottom: double;
   border-radius: 3px;
   border-color: white;
@@ -71,17 +114,48 @@
 #stockfish_image_slider {
   margin-top: 10px;
   width: calc(100%/3);
-  height:25px;
-  background-color: transparent ;
+  height: 25px;
+  background-color: transparent;
 }
 
-button{
+#settings_button {
   background: none;
   border: none;
   justify-content: center;
 }
 
-#settings_toggle{
+#enable_stockfish_outside {
+  justify-content: center;
+  height: 100%;
+
+}
+
+#slider_background {
+  appearance: none;
+  background-color: rgb(0 0 30 / 50%);
+  border: none;
+  justify-content: center;
+  width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  border-color: white;
+
+  display: flex;
+  justify-content: left;
+
+  margin-left: 1.5%;
+  margin-top: 4%;
+
+}
+
+#enable_stockfish_slider {
+  width: 20px;
+
+}
+
+
+
+#settings_toggle {
   background-color: transparent;
 }
 
@@ -89,12 +163,12 @@ button{
   display: flex;
   justify-content: space-evenly;
   height: 30px;
-  
-  
+
+
 }
 
-.is_active_round{
-  background-color: rgb(0 0 30 / 50%); ;
+.is_active_round {
+  background-color: rgb(0 0 30 / 50%);
 }
 
 .round_content {
@@ -113,7 +187,7 @@ button{
   list-style-type: none;
 }
 
-.round_content_numeric{
+.round_content_numeric {
   border-right: double;
   border-color: white;
   border-width: 3px;

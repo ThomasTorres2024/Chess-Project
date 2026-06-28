@@ -108,25 +108,36 @@
     </div>
 
     <!-- record of moves-->
-    <div id="round_record">
+    <div id="right_side">
 
-      <div id="stockfish_toggle">
-
-        <button>
-          <img id="stockfish_image_slider">
-        </button>
-
-        <h4>
-          Stockfish 4
-        </h4>
-        
-        <button>
-          <img id="settings_toggle">
-        </button>
+      <div id="stockfish_eval_bar">
+        <div id="white_win_percent"></div>
+        <div id="black_win_percent"></div>
       </div>
 
-      <!-- #here goes the dynamic html for round records, i left some commented out for future reference -->
-      <!-- <div class="round_record_container">
+      <div id="round_record">
+
+        <div id="stockfish_toggle">
+
+          <!--probably won't do this-->
+          <!-- <div id="enable_stockfish_outside">
+            <div id="slider_background">
+              <input type="radio" id="enable_stockfish_slider">
+            </div>
+          </div> -->
+
+          <h4>
+            <a id="stockfish_descriptor" href="https://chess-api.com/">Stockfish 18 NNUE</a>
+
+          </h4>
+
+          <div id="settings_button">
+
+          </div>
+        </div>
+
+        <!-- #here goes the dynamic html for round records, i left some commented out for future reference -->
+        <!-- <div class="round_record_container">
         <div class="round_content round_content_numeric">1)</div>
         <div class="round_content">e4</div>
         <div class="round_content">e5</div>
@@ -145,7 +156,9 @@
       </div> -->
 
 
+      </div>
     </div>
+
 
   </div>
 
