@@ -94,8 +94,6 @@ export default class Pawn extends ChessPiece {
                 }
             }
 
-            console.log(canBeTaken)
-
         }
 
 

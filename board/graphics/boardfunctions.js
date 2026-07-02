@@ -236,6 +236,31 @@ class BoardGraphicsManager {
     }
 
     /**
+     * Removes evaluation bar from display 
+     */
+    removeEvaluationBar() {
+        const sheet = document.styleSheets[0];
+        const rules = sheet.cssRules || sheet.rules;
+
+        let count = 0;
+
+        for (let i = 0; i < rules.length; i++) {
+            if (rules[i].selectorText == "#white_win_percent") {
+                rules[i].style.backgroundColor  = "transparent";
+                count += 1;
+            }
+            else if (rules[i].selectorText == "#black_win_percent") {
+                rules[i].style.backgroundColor  = "transparent";
+                count += 1;
+            }
+
+            if (count >= 2) {
+                break;
+            }
+        }
+    }
+
+    /**
      * Set evaluation bar 
      * @param {Chance of white winning} white_chance 
      * @param {Chance of black winning} black_chance 
@@ -246,21 +271,24 @@ class BoardGraphicsManager {
         //sheet.insertRule("#white_win_percent { height: 50 %; background - color: rgb(0 0 30 / 30 %);;} ", sheet.cssRules.length);
 
         const sheet = document.styleSheets[0];
-        const rules = sheet.cssRules || sheet.rules; 
+        const rules = sheet.cssRules || sheet.rules;
 
-        let count=0;
+        let count = 0;
 
         for (let i = 0; i < rules.length; i++) {
-            if (rules[i].selectorText === "#white_win_percent") {
-                rules[i].style.height = white_chance+"%";
-                count+=1;
+            if (rules[i].selectorText == "#black_win_percent") {
+                rules[i].style.height = black_chance + "%";
+                rules[i].style.backgroundColor  = "rgba(0,0,30,0.3)";
+                count += 1;
             }
-            else if(rules[i].selectorText === "#black_win_percent"){
-                rules[i].style.height = black_chance+"%";
-                count+=1;
+            else if (rules[i].selectorText == "#white_win_percent") {
+                rules[i].style.height = white_chance + "%";
+                rules[i].style.backgroundColor  = "rgba(255,255,255,0.2)";
+
+                count += 1;
             }
 
-            if(count>=2){
+            if (count >= 2) {
                 break;
             }
         }

@@ -32,10 +32,21 @@ export default class Coordinator {
         this.isDrawnByStaleMate = false;
         this.isDrawnByRepetition = false;
 
-        this.white_chance=50;
-        this.black_chance=50;
+        this.white_chance = 50;
+        this.black_chance = 50;
 
         this.stockfishEnabled = stockfishEnabled;
+
+        //sometimes need to force eval bar to be taken out 
+        if (!this.stockfishEnabled) {
+            this.boardGraphicsManager.removeEvaluationBar();
+
+            const stockFishSlider = document.getElementById("stockfish_is_enabled");
+            if (stockFishSlider.checked) {
+                stockFishSlider.checked = false;
+            }
+            //force state into gray 
+        }
 
     }
 
@@ -266,20 +277,35 @@ export default class Coordinator {
 
         //if stockfish is enabled, get corresponding info and update game panel with it 
         if (this.stockfishEnabled) {
+            this.update_stockfish();
+        }
+
+    }
+
+    /**
+     * Updates stockfish with corresponding info from the position
+     */
+    update_stockfish() {
+        //if game hasn't progressed past a single move
+        if (!this.roundManager.getCurrentRound()) {
+            this.boardGraphicsManager.modifyEvaluationBar(50, 50);
+        }
+        else {
+            let gameFen = "";
             try {
+
+                //if no move made, just put board to default display
+
 
                 //update fen and then get the resulting fen 
                 this.chessBoardVar.update_fen_board_state();
-                const gameFen = this.chessBoardVar.getBoardFEN()
-
-                console.log(gameFen);
+                gameFen = this.chessBoardVar.getBoardFEN()
 
                 postChessApi({ fen: gameFen }).then((data) => {
-                    console.log(data);
-                    this.white_chance=data.winChance;
-                    this.black_chance=100-this.white_chance;
+                    this.white_chance = data.winChance;
+                    this.black_chance = 100 - this.white_chance;
 
-                    this.boardGraphicsManager.modifyEvaluationBar(this.white_chance,this.black_chance);
+                    this.boardGraphicsManager.modifyEvaluationBar(this.white_chance, this.black_chance);
 
                     //modify board eval (evaluation) bar
 
@@ -288,6 +314,9 @@ export default class Coordinator {
             } catch (error) {
                 // Code to handle the error
                 console.error("An error occurred:", error.message);
+                console.log("Board FEN: ")
+                console.log(gameFen);
+                console.log(data)
             }
         }
 
@@ -305,6 +334,26 @@ export default class Coordinator {
         this.roundManager.addCastle(oldSquareCoord, newSquareCoord, oldRookSquare, newRookSquare, king, rook);
     }
 
+    /**
+     * Toggles stockfish off 
+     */
+    toggleStockFish() {
+        if (this.stockfishEnabled) {
+            this.stockfishEnabled = false;
+
+            //update sidebar to show odds 
+            this.boardGraphicsManager.removeEvaluationBar();
+
+        }
+        else {
+            this.stockfishEnabled = true;
+
+            //enable sidebar 
+            this.update_stockfish();
+        }
+
+        console.log("Stockfish set to: " + this.stockfishEnabled)
+    }
     //Performs En Passant 
     enPassant(pawnOldSquare, pawnNewSquare, opposingPawnNewSquare) {
 

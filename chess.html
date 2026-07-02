@@ -34,7 +34,15 @@
   <!--The part undeneath the navigation bar containing the board, wikibook section, and on the right the opening information-->
   <div id="middle_part">
 
-    <div id="wikibookcontainer"></div>
+    <div id="wikibookcontainer">
+      <div style="display: flex; justify-content: center;">
+        <h2 id="Wikibook_Label">Wikibook</h2>
+      </div>
+
+      <div id="Wikibook_RoundInfo">
+        <p style="font-family: 'Courier New', Courier, monospace; color: white; font-size: 12px; "></p>
+      </div>
+    </div>
 
     <!-- Board -->
     <div id="chess_board_container">
@@ -111,8 +119,8 @@
     <div id="right_side">
 
       <div id="stockfish_eval_bar">
-        <div id="white_win_percent"></div>
         <div id="black_win_percent"></div>
+        <div id="white_win_percent"></div>
       </div>
 
       <div id="round_record">
@@ -120,11 +128,15 @@
         <div id="stockfish_toggle">
 
           <!--probably won't do this-->
-          <!-- <div id="enable_stockfish_outside">
-            <div id="slider_background">
-              <input type="radio" id="enable_stockfish_slider">
-            </div>
-          </div> -->
+          <div id="enable_stockfish_outside">
+
+            <!--switch for toggling stockfish-->
+            <label class="switch">
+              <input type="checkbox" id="stockfish_is_enabled">
+              <span class="slider round"></span>
+            </label>
+
+          </div>
 
           <h4>
             <a id="stockfish_descriptor" href="https://chess-api.com/">Stockfish 18 NNUE</a>

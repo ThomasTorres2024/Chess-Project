@@ -29,10 +29,18 @@ function main() {
         //set board and graphics managers 
         newChessBoard.setGraphicsManager(boardGraphicsManager);
         newChessBoard.setRoundManager(roundManager);
-        console.log(newChessBoard.toString());
+        //console.log(newChessBoard.toString());
 
-        let enableStockFish=true;
-        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay,enableStockFish);
+        let enableStockFish = false;
+
+        //make all images undraggable 
+        document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('dragstart', (event) => {
+                        event.preventDefault();
+                });
+        });
+
+        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay, enableStockFish);
 
         //test for api here 
 

@@ -4,6 +4,29 @@
   background-attachment: fixed;
 }
 
+body {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-select: none;
+
+  -webkit-user-drag: none;
+  /* Safari and Chrome/Blink browsers */
+  user-drag: none;
+  /* Future standard syntax */
+
+  /* Optional: Prevents text/image highlighting highlighting while trying to drag */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+}
+
 #navbar_container {
   text-align: center;
 }
@@ -34,13 +57,13 @@
 
 }
 
-#white_win_percent {
+#black_win_percent {
   height: 50%;
   background-color: rgb(0 0 30 / 30%);
   ;
 }
 
-#black_win_percent {
+#white_win_percent {
   height: 50%;
   background-color: rgb(255 255 255 / 20%);
   ;
@@ -103,7 +126,7 @@
 
 #stockfish_toggle {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   height: 50px;
 
   border-bottom: double;
@@ -124,10 +147,77 @@
   justify-content: center;
 }
 
-#enable_stockfish_outside {
-  justify-content: center;
-  height: 100%;
 
+
+#enable_stockfish_outside {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 3%;
+
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: rgb(0 0 90 / 50%);
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 17px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 
 #slider_background {
@@ -135,9 +225,9 @@
   background-color: rgb(0 0 30 / 50%);
   border: none;
   justify-content: center;
-  width: 50px;
-  height: 25px;
-  border-radius: 25px;
+  width: 25px;
+  height: 12.5px;
+  border-radius: 12.5px;
   border-color: white;
 
   display: flex;
@@ -182,6 +272,31 @@
   font-size: 13px;
 }
 
+#wikibookcontainer {
+  display: flex;
+  flex-direction: column;
+}
+
+#Wikibook_RoundInfo {
+  border-top-color: white;
+  border-top-style: double;
+  display: flex;
+  justify-content: center;
+  height: 90%;
+  width: 100%;
+}
+
+#Wikibook_Label {
+  display: flex;
+  justify-content: center;
+  width: calc(100% / 3);
+  height: 30px;
+
+  color: white;
+  font-family: 'Lucida Console';
+  font-size: 18px;
+}
+
 #round_record ul {
   display: flex;
   list-style-type: none;
@@ -202,6 +317,12 @@
   border-color: white;
   height: 450px;
   width: 250px;
+
+  scrollbar-color: rgb(0 0 255 / 10%) rgb(0 0 255 / 10%);
+  scrollbar-width: thin;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 #move {

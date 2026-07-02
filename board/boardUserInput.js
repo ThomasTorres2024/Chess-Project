@@ -8,6 +8,8 @@ export function getUserBoardInput(coordinator)
 {
     const board = document.getElementById("chess_board_container");
 
+    const stockfish_toggle = document.getElementById("stockfish_is_enabled")
+
     //Click events, encompasses moving pieces for now
     board.addEventListener("click", event => {
 
@@ -27,6 +29,12 @@ export function getUserBoardInput(coordinator)
 
         //send user input to input handler
         coordinator.processSquareMoveinput(pieceCoord);})
+
+    //for stockfish toggle 
+    stockfish_toggle.addEventListener("click",event =>{
+        coordinator.toggleStockFish()
+    })
+
 }
 
 
