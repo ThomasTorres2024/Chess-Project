@@ -18,6 +18,9 @@ export default class Horse extends ChessPiece {
             this.setImageName("/images/pieces/horse_black.png")
         }
 
+        this.setAlgebraicNotationSymbol("N");
+        
+
     }
 
     //Determine moveable coords 

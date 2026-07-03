@@ -22,6 +22,8 @@ export default class Bishop extends ChessPiece{
             this.setImageName("/images/pieces/bishop_black.png")
         }
 
+        this.setAlgebraicNotationSymbol("B");
+
     }
 
     //Determine moveable coords, override parent function. 

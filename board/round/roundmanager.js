@@ -48,25 +48,25 @@ export default class RoundManager {
 
 
     //Adds rounds by creating current round, and linking it to previous round
-    addToRounds(oldSquare, newSquare, squareCoordobject) {
+    addToRounds(oldSquare, newSquare, squareCoordobject, piece_taken) {
 
         const piece = squareCoordobject.getPiece();
 
         //if the round head hasn't been established yet, establish it
         if (this.roundHead != null) {
             this.createNewRoundCore();
-            this.roundHead = new Round(this.previousRound, oldSquare, newSquare, this.board, this.count, this.currentColor, piece);
+            this.roundHead = new Round(this.previousRound, oldSquare, newSquare, this.board, this.count, this.currentColor, piece,piece_taken);
         }
         else {
             //create prev round to start off, give it a pointer
-            this.previousRound = new Round(null, oldSquare, newSquare, this.board, this.count, "white", piece);
+            this.previousRound = new Round(null, oldSquare, newSquare, this.board, this.count, "white", piece,piece_taken);
             this.roundHead = this.previousRound;
             //change color 
             this.currentColor = "black";
         }
 
-    }
-
+    }   
+    
     //Returns the string of the current round
     getCurrentRoundString() {
         return this.roundHead.toString();

@@ -35,6 +35,15 @@ export default class Coordinator {
         this.white_chance = 50;
         this.black_chance = 50;
 
+        this.algebraic_move_record = [];
+
+        //for pgn
+        this.algebraic_string_game = "";
+        //for wiki
+        this.wikibook_string = "";
+        this.current_wikibook_link = "";
+
+
         this.stockfishEnabled = stockfishEnabled;
 
         //sometimes need to force eval bar to be taken out 
@@ -205,12 +214,10 @@ export default class Coordinator {
 
         this.chessBoardVar.movePiece(oldSquareCoord, newSquareCoord);
 
-        //determine if black or white is checked after this move
-        this.roundManager.addToRounds(oldSquareCoord, newSquareCoord, this.chessBoardVar.getSquareAt(newSquareCoord));
-        const move = this.roundManager.getCurrentRound();
 
-        //adds the move just made to the board, where move is the move string and the round manager is a color corresponding to the color
-        this.roundDisplay.addMoveStringDisplay(move, this.roundManager.getRoundColor())
+        //determine if black or white is checked after this move
+        this.roundManager.addToRounds(oldSquareCoord, newSquareCoord, this.chessBoardVar.getSquareAt(newSquareCoord), pieceTaken);
+        const move = this.roundManager.getCurrentRound();
 
         //COMMENT OUT FOR NORMAL FUNCTIONALITY
         //update what moves can be made for the next player and check status 
@@ -237,23 +244,35 @@ export default class Coordinator {
             console.log("Black checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getBlackKing());
             let checkSound = new Audio("/sound/Check.mp3");
+
+            move.setBlackKingChecked(true);
+
             checkSound.play();
+
         }
         else if (this.whiteChecked) {
             console.log("White checked.");
             this.boardGraphicsManager.highlightCheckedPiece(this.chessBoardVar.getWhiteKing());
             let checkSound = new Audio("/sound/Check.mp3");
+
+            move.setWhiteKingChecked(true);
+
             checkSound.play();
         }
 
         //Game Ending State Functions and continue game part
         if (this.isDrawnByStaleMate) {
+
+            move.setDrawn(true);
+
             console.log("Game over by stalemate.")
         }
         else if (this.blackCheckMated) {
+            move.setBlackKingCheckMated(true);
             console.log("Game over by black being checkmated")
         }
         else if (this.whiteCheckMated) {
+            move.whiteCheckMated(true);
             console.log("Game over by white being checkmated")
         }
 
@@ -269,16 +288,99 @@ export default class Coordinator {
             }
         }
 
-        //temporary until i can get the enpassant func back up 
-        // this.chessBoardVar.update_fen_board_state();
-        // const gameFen = this.chessBoardVar.getBoardFEN()
-
-        // console.log(gameFen);
+        //adds the move just made to the board, where move is the move string and the round manager is a color corresponding to the color
+        this.roundDisplay.addMoveStringDisplay(move, this.roundManager.getRoundColor())
 
         //if stockfish is enabled, get corresponding info and update game panel with it 
         if (this.stockfishEnabled) {
             this.update_stockfish();
         }
+
+        //at the end update the algebraic move record for wikibook
+        this.algebraic_move_record.push(move.getMoveAlgebraic());
+
+        //update algebraic string and feed to wikibook updater 
+        this.update_wikibook_string(move);
+        this.update_wikibook(this.wikibook_string);
+
+    }
+
+    /**
+     * Updates wikibook stirng in object
+     * @param {Updates wikibook string} move 
+     */
+    update_wikibook_string(move) {
+
+        let round_move = "/" + String(move.getCount());
+
+        if (move.getPiece().getColor() == "white") {
+            round_move += "._";
+        } else {
+            round_move += "...";
+        }
+        round_move += move.getMoveAlgebraic();
+        this.wikibook_string += round_move;
+    }
+
+    /**
+     * Updates wikibook display 
+     */
+    async update_wikibook(algebraic_sequence_moves) {
+
+        const endpoint = "https://en.wikibooks.org/w/api.php";
+
+        const page_name = "Chess_Opening_Theory" + algebraic_sequence_moves;
+        console.log(page_name)
+
+        const params = new URLSearchParams({
+            action: "parse",     // Specify the action to perform
+            page: page_name,
+            format: "json",      // Request the response in JSON format
+            origin: "*"          // Crucial: Solves CORS errors for browser requests
+        });
+
+        const url = `${endpoint}?${params.toString()}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+        });
+
+        const response_json = await response.json();
+
+        console.log(url);
+
+        //if read was fine then we can parse the output 
+        if (response_json.parse) {
+
+            const page_info = response_json.parse.text['*'];
+            const hyperlink_url = "https://en.wikibooks.org/wiki/" + page_name;
+
+            const specifiedDataType = "text/html";
+            let parsedPageAsDocument = new DOMParser().parseFromString(page_info, specifiedDataType);
+            console.log(parsedPageAsDocument)
+            let all_p_tags = parsedPageAsDocument.getElementsByTagName("p");
+
+            let n = 10;
+            let top_n_paragraphs = []
+            //first entry is always FEN of position, want to avoid actively
+            for (let i = 1; i < Math.min(n + 1, all_p_tags.length); i++) {
+                top_n_paragraphs.push(all_p_tags[i].textContent);
+            }
+
+            //need to get header tag also 
+            let header_text=parsedPageAsDocument.getElementsByTagName("h2")[0].textContent;
+
+            //feed into graphics manager
+            if(top_n_paragraphs.length>0){
+                this.boardGraphicsManager.addTextToWikiBoard(top_n_paragraphs,header_text);
+            }
+
+        
+        }else{
+            //put message into graphics manager telling it it's okay     
+            this.boardGraphicsManager.addTextToWikiBoard(["Out of theory, no moves found for this sequence."]);
+        }
+
 
     }
 

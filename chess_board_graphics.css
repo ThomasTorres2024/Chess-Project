@@ -12,8 +12,7 @@ body {
   -moz-user-select: none;
 
   -webkit-user-drag: none;
-  /* Safari and Chrome/Blink browsers */
-  user-drag: none;
+
   /* Future standard syntax */
 
   /* Optional: Prevents text/image highlighting highlighting while trying to drag */
@@ -277,16 +276,24 @@ input:checked+.slider:before {
   flex-direction: column;
 }
 
-#Wikibook_RoundInfo {
-  border-top-color: white;
-  border-top-style: double;
+#wikibook_label_container {
+  border-bottom-color: white;
+  border-bottom-style: double;
   display: flex;
   justify-content: center;
+}
+
+#Wikibook_RoundInfo {
+  display: flex;
+  flex-direction: column;
   height: 90%;
-  width: 100%;
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 #Wikibook_Label {
+
   display: flex;
   justify-content: center;
   width: calc(100% / 3);
@@ -297,9 +304,25 @@ input:checked+.slider:before {
   font-size: 18px;
 }
 
+.Wikibook_Header {
+
+  color: white;
+  font-family: 'Lucida Console';
+  font-size: 15px;
+}
+
 #round_record ul {
   display: flex;
   list-style-type: none;
+}
+
+.wikibook_entry {
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .round_content_numeric {
@@ -312,7 +335,8 @@ input:checked+.slider:before {
 #wikibookcontainer {
   border-style: double;
   border-radius: 3;
-  margin-left: 3%;
+  margin-left: 5%;
+  margin-right: 5%;
   margin-top: 2%;
   border-color: white;
   height: 450px;

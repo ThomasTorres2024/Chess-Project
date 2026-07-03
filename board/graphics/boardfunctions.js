@@ -385,6 +385,32 @@ class BoardGraphicsManager {
         this.isVisualizing = isVisualizing;
     }
 
+    /**
+     * Add content from move sequence and wikibook onto wikibook board
+     * @param {List of paragraphs to add into wikibook display} messages_to_add 
+     */
+    addTextToWikiBoard(messages_to_add,header_text){
+        const wiki_section=document.getElementById("Wikibook_RoundInfo");
+
+        //clear section of existing nodes 
+        wiki_section.replaceChildren();
+
+        //first add headernode 
+        const new_header = document.createElement("h2");
+        new_header.textContent=header_text;
+        new_header.classList.add("Wikibook_Header")
+        wiki_section.append(new_header);
+
+        for(let i =0; i < messages_to_add.length;i++){
+            let message=messages_to_add[i];
+
+            const new_p_tag = document.createElement("p");
+            new_p_tag.textContent=message;
+            new_p_tag.classList.add("wikibook_entry")
+            wiki_section.append(new_p_tag);
+        }
+
+    }
 
 }
 
