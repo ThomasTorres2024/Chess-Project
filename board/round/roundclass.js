@@ -14,9 +14,10 @@ export default class Round {
         this.board = board;
         this.count = count;
         this.turnColor = turnColor;
+        
 
-        if(this.piece){
-            this.turnColor=this.piece.getColor();
+        if (this.piece) {
+            this.turnColor = this.piece.getColor();
         }
 
         this.blackChecked = false;
@@ -153,9 +154,7 @@ export default class Round {
             round_string += "+";
         }
 
-
         return round_string;
-
 
     }
 

@@ -34,11 +34,11 @@ export default class RoundDisplay {
     const roundDocName = "round_record";
 
     //increment round index if the move is white, since any white move will take place at the start 
+
+
     if (moveIsWhite) {
       this.roundIndex += 1;
       const roundRecordDoc = document.getElementById(roundDocName);
-
-
 
       //new part 
       const row_id = "move_" + this.roundIndex;

@@ -19,7 +19,7 @@ import RoundDisplay from "/round_display/round_display_graphics.js";
 //Coordinates interactions between the chess board variable, graphics manager, and round manager 
 export default class Coordinator {
     //Sets cals for the chess board, the graphics manager for the board, the round manage,r and the round display manager 
-    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay, stockfishEnabled) {
+    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay, stockfishEnabled,tree_var) {
         this.chessBoardVar = chessBoardVar;
         this.boardGraphicsManager = boardGraphicsManager;
         this.roundManager = roundManager;
@@ -43,18 +43,22 @@ export default class Coordinator {
         this.wikibook_string = "";
         this.current_wikibook_link = "";
 
+        this.tree_var=tree_var;
+        console.log(tree_var);
+
 
         this.stockfishEnabled = stockfishEnabled;
-
+        const stockFishSlider = document.getElementById("stockfish_is_enabled");
         //sometimes need to force eval bar to be taken out 
         if (!this.stockfishEnabled) {
             this.boardGraphicsManager.removeEvaluationBar();
 
-            const stockFishSlider = document.getElementById("stockfish_is_enabled");
             if (stockFishSlider.checked) {
                 stockFishSlider.checked = false;
             }
-            //force state into gray 
+        }
+        else {
+            stockFishSlider.checked = true;
         }
 
     }
@@ -272,7 +276,10 @@ export default class Coordinator {
             console.log("Game over by black being checkmated")
         }
         else if (this.whiteCheckMated) {
-            move.whiteCheckMated(true);
+            console.log(move)
+            console.log(typeof (move))
+            move.setWhiteKingCheckMated(true);
+
             console.log("Game over by white being checkmated")
         }
 
@@ -291,6 +298,12 @@ export default class Coordinator {
         //adds the move just made to the board, where move is the move string and the round manager is a color corresponding to the color
         this.roundDisplay.addMoveStringDisplay(move, this.roundManager.getRoundColor())
 
+        //update fen string     
+        if (this.roundManager.getCurrentRound()) {
+            this.chessBoardVar.update_fen_board_state();
+        }
+
+
         //if stockfish is enabled, get corresponding info and update game panel with it 
         if (this.stockfishEnabled) {
             this.update_stockfish();
@@ -302,7 +315,31 @@ export default class Coordinator {
         //update algebraic string and feed to wikibook updater 
         this.update_wikibook_string(move);
         this.update_wikibook(this.wikibook_string);
+        this.update_pgn_string(move);
 
+        this.boardGraphicsManager.update_pgn_display(this.algebraic_string_game);
+        this.boardGraphicsManager.update_fen_display(this.chessBoardVar.getBoardFEN());
+
+
+    }
+
+
+    /**
+     * Updates stirng for PGN in object
+     * @param {Updates wikibook string} move 
+     */
+    update_pgn_string(move) {
+        
+        let round_move = move.getMoveAlgebraic();
+
+        if (move.getPiece().getColor() == "white") {
+            round_move = String(move.getCount()) + ". " + round_move;
+        }
+        else {
+            round_move = " " + round_move + " ";
+        }
+
+        this.algebraic_string_game += round_move;
     }
 
     /**
@@ -330,7 +367,7 @@ export default class Coordinator {
         const endpoint = "https://en.wikibooks.org/w/api.php";
 
         const page_name = "Chess_Opening_Theory" + algebraic_sequence_moves;
-        console.log(page_name)
+        //console.log(page_name)
 
         const params = new URLSearchParams({
             action: "parse",     // Specify the action to perform
@@ -347,7 +384,6 @@ export default class Coordinator {
 
         const response_json = await response.json();
 
-        console.log(url);
 
         //if read was fine then we can parse the output 
         if (response_json.parse) {
@@ -357,7 +393,7 @@ export default class Coordinator {
 
             const specifiedDataType = "text/html";
             let parsedPageAsDocument = new DOMParser().parseFromString(page_info, specifiedDataType);
-            console.log(parsedPageAsDocument)
+
             let all_p_tags = parsedPageAsDocument.getElementsByTagName("p");
 
             let n = 10;
@@ -368,15 +404,15 @@ export default class Coordinator {
             }
 
             //need to get header tag also 
-            let header_text=parsedPageAsDocument.getElementsByTagName("h2")[0].textContent;
+            let header_text = parsedPageAsDocument.getElementsByTagName("h2")[0].textContent;
 
             //feed into graphics manager
-            if(top_n_paragraphs.length>0){
-                this.boardGraphicsManager.addTextToWikiBoard(top_n_paragraphs,header_text);
+            if (top_n_paragraphs.length > 0) {
+                this.boardGraphicsManager.addTextToWikiBoard(top_n_paragraphs, header_text);
             }
 
-        
-        }else{
+
+        } else {
             //put message into graphics manager telling it it's okay     
             this.boardGraphicsManager.addTextToWikiBoard(["Out of theory, no moves found for this sequence."]);
         }
@@ -388,6 +424,7 @@ export default class Coordinator {
      * Updates stockfish with corresponding info from the position
      */
     update_stockfish() {
+
         //if game hasn't progressed past a single move
         if (!this.roundManager.getCurrentRound()) {
             this.boardGraphicsManager.modifyEvaluationBar(50, 50);
@@ -399,8 +436,6 @@ export default class Coordinator {
                 //if no move made, just put board to default display
 
 
-                //update fen and then get the resulting fen 
-                this.chessBoardVar.update_fen_board_state();
                 gameFen = this.chessBoardVar.getBoardFEN()
 
                 postChessApi({ fen: gameFen }).then((data) => {
@@ -409,7 +444,9 @@ export default class Coordinator {
 
                     this.boardGraphicsManager.modifyEvaluationBar(this.white_chance, this.black_chance);
 
-                    //modify board eval (evaluation) bar
+                    //draw top moves in position 
+                    let next_move = data.continuationArr[0];
+                    console.log(next_move)
 
                 });
 
@@ -421,6 +458,7 @@ export default class Coordinator {
                 console.log(data)
             }
         }
+
 
     }
 
@@ -434,6 +472,7 @@ export default class Coordinator {
         king.setMoved(true);
         rook.setMoved(true);
         this.roundManager.addCastle(oldSquareCoord, newSquareCoord, oldRookSquare, newRookSquare, king, rook);
+        this.roundDisplay.addMoveStringDisplay(this.roundManager.getCurrentRound(), this.roundManager.getCurrentRound().getTurnColor());
     }
 
     /**

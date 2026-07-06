@@ -246,11 +246,11 @@ class BoardGraphicsManager {
 
         for (let i = 0; i < rules.length; i++) {
             if (rules[i].selectorText == "#white_win_percent") {
-                rules[i].style.backgroundColor  = "transparent";
+                rules[i].style.backgroundColor = "transparent";
                 count += 1;
             }
             else if (rules[i].selectorText == "#black_win_percent") {
-                rules[i].style.backgroundColor  = "transparent";
+                rules[i].style.backgroundColor = "transparent";
                 count += 1;
             }
 
@@ -278,12 +278,12 @@ class BoardGraphicsManager {
         for (let i = 0; i < rules.length; i++) {
             if (rules[i].selectorText == "#black_win_percent") {
                 rules[i].style.height = black_chance + "%";
-                rules[i].style.backgroundColor  = "rgba(0,0,30,0.3)";
+                rules[i].style.backgroundColor = "rgba(0,0,30,0.3)";
                 count += 1;
             }
             else if (rules[i].selectorText == "#white_win_percent") {
                 rules[i].style.height = white_chance + "%";
-                rules[i].style.backgroundColor  = "rgba(255,255,255,0.2)";
+                rules[i].style.backgroundColor = "rgba(255,255,255,0.2)";
 
                 count += 1;
             }
@@ -385,32 +385,53 @@ class BoardGraphicsManager {
         this.isVisualizing = isVisualizing;
     }
 
+    drawArrowsForBestMove() {
+
+    }
+
     /**
      * Add content from move sequence and wikibook onto wikibook board
      * @param {List of paragraphs to add into wikibook display} messages_to_add 
      */
-    addTextToWikiBoard(messages_to_add,header_text){
-        const wiki_section=document.getElementById("Wikibook_RoundInfo");
+    addTextToWikiBoard(messages_to_add, header_text) {
+        const wiki_section = document.getElementById("Wikibook_RoundInfo");
 
         //clear section of existing nodes 
         wiki_section.replaceChildren();
 
         //first add headernode 
         const new_header = document.createElement("h2");
-        new_header.textContent=header_text;
+        new_header.textContent = header_text;
         new_header.classList.add("Wikibook_Header")
         wiki_section.append(new_header);
 
-        for(let i =0; i < messages_to_add.length;i++){
-            let message=messages_to_add[i];
+        for (let i = 0; i < messages_to_add.length; i++) {
+            let message = messages_to_add[i];
 
             const new_p_tag = document.createElement("p");
-            new_p_tag.textContent=message;
+            new_p_tag.textContent = message;
             new_p_tag.classList.add("wikibook_entry")
             wiki_section.append(new_p_tag);
         }
 
     }
+
+    /**
+     * Updates PGN display with new PGN string
+     * @param {PGN string} pgn_string 
+     */
+    update_pgn_display(pgn_string) {
+        const pgn_section = document.getElementById("PGN_display");
+        pgn_section.textContent = pgn_string;
+    }
+
+    update_fen_display(fen_string) {
+        
+        console.log(fen_string)
+        const fen_selection = document.getElementById("FEN_display");
+        fen_selection.textContent = fen_string;
+    }
+
 
 }
 

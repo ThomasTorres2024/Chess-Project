@@ -41,7 +41,8 @@ export default class RoundManager {
         //preps for making a new round
         this.createNewRoundCore();
         //Creates a new round just for castling 
-        this.roundHead = new CastleRound(this.previousRound, kingOldSquare, kingNewSquare, king, rookOldSquare, rookNewSquare, rook, this.board, this.count, this.turnColor)
+
+        this.roundHead = new CastleRound(this.previousRound, kingOldSquare, kingNewSquare, king, rookOldSquare, rookNewSquare, rook, this.board, this.count, this.currentColor)
     }
 
     //Adds an en passant into the move order 
