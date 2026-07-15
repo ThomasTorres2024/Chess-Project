@@ -42,11 +42,32 @@ function main() {
         });
 
         //tree will be modified dynamically 
-        let tree = new Treant(chart_config);
-        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay, enableStockFish,tree);
+        var default_treeant_config = {
+                chart: {
+                        container: "#collapsable-tree",
+
+                        animateOnInit: true,
+
+                        node: {
+                                collapsable: true
+                        },
+                        animation: {
+                                nodeAnimation: "easeOutBounce",
+                                nodeSpeed: 700,
+                                connectorsAnimation: "bounce",
+                                connectorsSpeed: 700
+                        }
+                },
+                nodeStructure: {
+                        image: "images/pieces/king_white.png",
+                }
+        };
+
+        let tree = new Treant(default_treeant_config);
+        let coordinator = new Coordinator(newChessBoard, boardGraphicsManager, roundManager, roundDisplay, enableStockFish, tree);
 
         //checkPawnQueenPromo(coordinator);
-        royLopez(coordinator);
+        // royLopez(coordinator);
 
         getUserBoardInput(coordinator);
 

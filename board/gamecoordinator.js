@@ -19,7 +19,7 @@ import RoundDisplay from "/round_display/round_display_graphics.js";
 //Coordinates interactions between the chess board variable, graphics manager, and round manager 
 export default class Coordinator {
     //Sets cals for the chess board, the graphics manager for the board, the round manage,r and the round display manager 
-    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay, stockfishEnabled,tree_var) {
+    constructor(chessBoardVar, boardGraphicsManager, roundManager, roundDisplay, stockfishEnabled, tree_var) {
         this.chessBoardVar = chessBoardVar;
         this.boardGraphicsManager = boardGraphicsManager;
         this.roundManager = roundManager;
@@ -41,10 +41,50 @@ export default class Coordinator {
         this.algebraic_string_game = "";
         //for wiki
         this.wikibook_string = "";
+
+        //will store the article parsed here
+        this.wikibook_parsed = "";
+
         this.current_wikibook_link = "";
 
-        this.tree_var=tree_var;
-        console.log(tree_var);
+        this.tree_var = tree_var;
+
+        this.default_node_used = false;
+        this.treeant_all_nodes = new Map();
+
+        //modify tree var 
+        this.tree = chart_config = {
+            chart: {
+                container: "#collapsable-tree",
+
+                animateOnInit: true,
+
+                node: {
+                    collapsable: true
+                },
+                animation: {
+                    nodeAnimation: "easeOutBounce",
+                    nodeSpeed: 700,
+                    connectorsAnimation: "bounce",
+                    connectorsSpeed: 700
+                }
+            },
+            nodeStructure: {
+                image: "img/pieces/king_white.png",
+                children: [
+                    {
+                        image: "img/lana.png",
+                        collapsed: true,
+                        children: [
+                            {
+                                image: "img/figgs.png"
+                            }
+                        ]
+                    },
+
+                ]
+            }
+        };
 
 
         this.stockfishEnabled = stockfishEnabled;
@@ -313,23 +353,150 @@ export default class Coordinator {
         this.algebraic_move_record.push(move.getMoveAlgebraic());
 
         //update algebraic string and feed to wikibook updater 
-        this.update_wikibook_string(move);
-        this.update_wikibook(this.wikibook_string);
+        this.parse_wikibook(move);
+        this.update_wikibook(this.wikibook_string, move);
         this.update_pgn_string(move);
 
+        //updates pgn and fen 
         this.boardGraphicsManager.update_pgn_display(this.algebraic_string_game);
         this.boardGraphicsManager.update_fen_display(this.chessBoardVar.getBoardFEN());
 
-
     }
 
+    /**
+     * When the user makes a move, updates the treeant config to show the best next moves the user can make, and what they are called 
+     */
+    getTreeantConfigForMove(list_moves, move) {
+
+        //update info for this round 
+        console.log(list_moves)
+
+        let config = {
+            container: "#tree-simple"
+        };
+        let parent_node = {
+            text: { name: "Parent node" }
+        };
+
+
+        let first_child = {
+            parent: parent_node,
+            text: { name: "First child" }
+        };
+        let second_child = {
+            parent: parent_node,
+            text: { name: "Second child" }
+        };
+        let simple_chart_config = [
+            config, parent_node,
+            first_child, second_child
+        ];
+
+        let move_names = [];
+        let move_str = [];
+
+        // console.log(move.getMoveAlgebraic());
+        // console.log(move.getPiece().getColor());
+        console.log(this.algebraic_string_game)
+        const move_alg = move.getMoveAlgebraic();
+        const move_color = move.getPiece().getColor();
+        for (let i = 0; i < list_moves.length; i++) {
+            let split = list_moves[i].split("-");
+
+            //get corresponding image, parse based on color of the move
+
+            // this.boardGraphicsManager.
+
+            let new_node = {
+                parent: this.parent_node,
+            }
+
+            //process text part and image according to color 
+            if(move_color=="white"){
+
+            }
+            else{
+                
+            }
+
+            if(split.length>=2){
+                new_node['text']=split[1];
+            }
+
+            const alg_route=this.algebraic_string_game;
+            this.treeant_all_nodes.add(alg_route,new_node);
+        }
+
+        if (this.default_node_used) {
+
+        }
+        //set up default node 
+        else {
+            this.default_node_used = true;
+        }
+
+        // //tree will be modified dynamically 
+        let new_treenant_config = {
+            chart: {
+                container: "#collapsable-tree",
+
+                animateOnInit: true,
+
+                node: {
+                    collapsable: true
+                },
+                animation: {
+                    nodeAnimation: "easeOutBounce",
+                    nodeSpeed: 700,
+                    connectorsAnimation: "bounce",
+                    connectorsSpeed: 700
+                }
+            },
+            nodeStructure: {
+                image: "images/pieces/king_black.png",
+                children: [
+                    {
+                        image: "img/lana.png",
+                        collapsed: true,
+                        children: [
+                            {
+                                image: "img/figgs.png"
+                            }
+                        ]
+                    },
+                    {
+                        image: "img/sterling.png",
+                        childrenDropLevel: 1,
+                        children: [
+                            {
+                                image: "img/woodhouse.png"
+                            }
+                        ]
+                    },
+                    {
+                        pseudo: true,
+                        children: [
+                            {
+                                image: "img/cheryl.png"
+                            },
+                            {
+                                image: "img/pam.png"
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        return new_treenant_config;
+    }
 
     /**
      * Updates stirng for PGN in object
      * @param {Updates wikibook string} move 
      */
     update_pgn_string(move) {
-        
+
         let round_move = move.getMoveAlgebraic();
 
         if (move.getPiece().getColor() == "white") {
@@ -343,10 +510,10 @@ export default class Coordinator {
     }
 
     /**
-     * Updates wikibook stirng in object
+     * Updates wikibook stirng in object and also makes new config for treeant 
      * @param {Updates wikibook string} move 
      */
-    update_wikibook_string(move) {
+    parse_wikibook(move) {
 
         let round_move = "/" + String(move.getCount());
 
@@ -362,7 +529,7 @@ export default class Coordinator {
     /**
      * Updates wikibook display 
      */
-    async update_wikibook(algebraic_sequence_moves) {
+    async update_wikibook(algebraic_sequence_moves, move) {
 
         const endpoint = "https://en.wikibooks.org/w/api.php";
 
@@ -389,6 +556,10 @@ export default class Coordinator {
         if (response_json.parse) {
 
             const page_info = response_json.parse.text['*'];
+
+            //set all info to this 
+            this.wikibook_parsed = page_info;
+
             const hyperlink_url = "https://en.wikibooks.org/wiki/" + page_name;
 
             const specifiedDataType = "text/html";
@@ -410,6 +581,37 @@ export default class Coordinator {
             if (top_n_paragraphs.length > 0) {
                 this.boardGraphicsManager.addTextToWikiBoard(top_n_paragraphs, header_text);
             }
+
+            //update treenat now 
+            let all_tr_tags = parsedPageAsDocument.getElementsByTagName("tr");
+
+            //find responses set 
+            let li_texts = [];
+            const find_common_responses_str = "Responses:";
+            for (let i = 0; i < 10; i++) {
+                // console.log(all_tr_tags[i].outerHTML)
+
+                //try to look for <tr> tag where the first child tag is <b>Responses</b>
+                let curr_child = all_tr_tags[i].children;
+
+                if (curr_child['0'].firstChild && curr_child['0'].firstChild.outerText == find_common_responses_str) {
+
+                    //get list of all ul tags 
+                    // console.log(curr_child['0'].outerHTML);
+                    let parsedPageAsDocument = new DOMParser().parseFromString(curr_child['0'].outerHTML, specifiedDataType);
+
+                    let found_li_items = parsedPageAsDocument.getElementsByTagName("li");
+
+                    for (let j = 0; j < found_li_items.length; j++) {
+                        li_texts.push(found_li_items[j].innerText);
+                    }
+
+                    //extract raw text from elements 
+                    break;
+                }
+            }
+            this.getTreeantConfigForMove(li_texts, move);
+            //update treenant now 
 
 
         } else {
