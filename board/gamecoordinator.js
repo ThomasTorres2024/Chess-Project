@@ -12,7 +12,7 @@
 //Game coordinator coordinates all of the pieces to visually represent the game and as well represent
 //the rules of the game 
 
-import { convertApproximateCoordsToBoard, postChessApi } from "/board/boardutility.js"
+import { convertApproximateCoordsToBoard, postChessApi, convertAlgebraicMoveToPieceMoved } from "/board/boardutility.js"
 import { BoardGraphicsManager } from "/board/graphics/boardfunctions.js";
 import RoundManager from "/board/round/roundmanager.js"
 import RoundDisplay from "/round_display/round_display_graphics.js";
@@ -49,8 +49,17 @@ export default class Coordinator {
 
         this.tree_var = tree_var;
 
-        this.default_node_used = false;
-        this.treeant_all_nodes = new Map();
+        //for treeant
+        this.previous_parent_node = false;
+
+        let config = {
+
+            container: "#collapsable-tree"
+        };
+
+        //treeant config is a list
+        this.treeant_config = [config];
+        this.treeant_record = new Map();
 
         //modify tree var 
         this.tree = chart_config = {
@@ -85,7 +94,6 @@ export default class Coordinator {
                 ]
             }
         };
-
 
         this.stockfishEnabled = stockfishEnabled;
         const stockFishSlider = document.getElementById("stockfish_is_enabled");
@@ -366,129 +374,66 @@ export default class Coordinator {
     /**
      * When the user makes a move, updates the treeant config to show the best next moves the user can make, and what they are called 
      */
-    getTreeantConfigForMove(list_moves, move) {
+    getTreeantConfigForMove(list_moves, move, move_title) {
 
         //update info for this round 
         console.log(list_moves)
+        let parent_node;
 
-        let config = {
-            container: "#tree-simple"
-        };
-        let parent_node = {
-            text: { name: "Parent node" }
-        };
-
-
-        let first_child = {
-            parent: parent_node,
-            text: { name: "First child" }
-        };
-        let second_child = {
-            parent: parent_node,
-            text: { name: "Second child" }
-        };
-        let simple_chart_config = [
-            config, parent_node,
-            first_child, second_child
-        ];
-
-        let move_names = [];
-        let move_str = [];
-
-        // console.log(move.getMoveAlgebraic());
-        // console.log(move.getPiece().getColor());
-        console.log(this.algebraic_string_game)
         const move_alg = move.getMoveAlgebraic();
         const move_color = move.getPiece().getColor();
+
+        if (this.previous_parent_node) {
+            let move_as_alg = move.getMoveAlgebraic();
+            let alg_route = this.algebraic_string_game;
+            parent_node = this.treeant_record.get(this.algebraic_string_game);
+        }
+        //if treeant has yet to declare a parent node 
+        else {
+            parent_node = {
+                text: { name: move_title },
+            };
+            this.treeant_config.push(parent_node);
+            this.previous_parent_node = true;
+        }
+
+        //const parent_move_img = convertAlgebraicMoveToPieceMoved(move_alg, move.getPiece().getColor());
+
+        //create nodes for hypothetical moves
         for (let i = 0; i < list_moves.length; i++) {
             let split = list_moves[i].split("-");
 
             //get corresponding image, parse based on color of the move
 
-            // this.boardGraphicsManager.
-
             let new_node = {
-                parent: this.parent_node,
+                parent: parent_node,
+                text: { name: list_moves[i] }
             }
+
+            let move_as_alg;
+            let alg_route = this.algebraic_string_game;
+            let piece_moved;
 
             //process text part and image according to color 
-            if(move_color=="white"){
-
+            if (move_color == "white") {
+                move_as_alg = (split[0].slice(4, split[0].length));
+                alg_route = alg_route + " " + move_as_alg;
+                piece_moved = convertAlgebraicMoveToPieceMoved(move_as_alg, "black");
             }
-            else{
-                
+            else {
+                move_as_alg = (split[0].slice(3, split[0].length));
+                alg_route = alg_route + String(move.getCount() + 1) + "." + move_as_alg;
+                piece_moved = convertAlgebraicMoveToPieceMoved(move_as_alg, "white");
             }
 
-            if(split.length>=2){
-                new_node['text']=split[1];
-            }
-
-            const alg_route=this.algebraic_string_game;
-            this.treeant_all_nodes.add(alg_route,new_node);
+            this.treeant_record.set(alg_route, new_node);
+            new_node['text'] = { name: move_as_alg }
+            this.treeant_config.push(new_node);
         }
 
-        if (this.default_node_used) {
+        //update tree 
+        this.tree = new Treant(this.treeant_config);
 
-        }
-        //set up default node 
-        else {
-            this.default_node_used = true;
-        }
-
-        // //tree will be modified dynamically 
-        let new_treenant_config = {
-            chart: {
-                container: "#collapsable-tree",
-
-                animateOnInit: true,
-
-                node: {
-                    collapsable: true
-                },
-                animation: {
-                    nodeAnimation: "easeOutBounce",
-                    nodeSpeed: 700,
-                    connectorsAnimation: "bounce",
-                    connectorsSpeed: 700
-                }
-            },
-            nodeStructure: {
-                image: "images/pieces/king_black.png",
-                children: [
-                    {
-                        image: "img/lana.png",
-                        collapsed: true,
-                        children: [
-                            {
-                                image: "img/figgs.png"
-                            }
-                        ]
-                    },
-                    {
-                        image: "img/sterling.png",
-                        childrenDropLevel: 1,
-                        children: [
-                            {
-                                image: "img/woodhouse.png"
-                            }
-                        ]
-                    },
-                    {
-                        pseudo: true,
-                        children: [
-                            {
-                                image: "img/cheryl.png"
-                            },
-                            {
-                                image: "img/pam.png"
-                            }
-                        ]
-                    }
-                ]
-            }
-        };
-
-        return new_treenant_config;
     }
 
     /**
@@ -610,7 +555,7 @@ export default class Coordinator {
                     break;
                 }
             }
-            this.getTreeantConfigForMove(li_texts, move);
+            this.getTreeantConfigForMove(li_texts, move, header_text);
             //update treenant now 
 
 

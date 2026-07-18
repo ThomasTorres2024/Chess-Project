@@ -286,7 +286,7 @@ function checkValidityPoints(piece, pointList, moveableSquares, takeableSquares)
     for (let i = 0; i < pointList.length; i++) {
         let file = pointList[i][0].charCodeAt(0);
         let rank = parseInt(pointList[i][1]);
-        
+
         //if bounds are valid
         if ((file < 73 && file > 64) && (rank > 0 && rank < 9)) {
             let squareIterative = piece.getBoard().getSquareAt(String.fromCharCode(file) + rank);
@@ -362,8 +362,43 @@ async function postChessApi(data = {}) {
     return response.json();
 }
 
+/**
+ * Determines the piece that made a move given the string of the piece moving
+ * @param {The move made by a piece} move_string 
+ * @param {Color of the move} color 
+ */
+function convertAlgebraicMoveToPieceMoved(move_string, color) {
+    let piece_found = "/images/pieces/";
+
+    if (move_string.length > 0) {
+        let principal_char = move_string[0];
+
+        switch (principal_char) {
+            case 'B':
+                piece_found += "bishop"
+                break;
+            case 'N':
+                piece_found += "horse"
+                break;
+            case 'K':
+                piece_found += "king"
+                break;
+            case 'Q':
+                piece_found += "queen"
+                break;
+            default:
+                piece_found += "pawn"
+                break;
+            // Code runs if no cases match
+        }
+
+        piece_found+="_"+color+".png";
+    }
+    return piece_found;
+}
+
 export {
     convertBoardPositionCartesian, convertFileToCartesian, convertCartesianToFile,
     convertCartesianChessCoords, iterateOverRank, iterateOverFile, iterateUpwardRight, iterateDownwardRight, checkValidityPoints,
-    convertApproximateCoordsToBoard, pointToColor, postChessApi, fileToCartesianMap, cartesianToFileMap
+    convertApproximateCoordsToBoard, pointToColor, postChessApi, fileToCartesianMap, cartesianToFileMap, convertAlgebraicMoveToPieceMoved
 }
