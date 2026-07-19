@@ -52,48 +52,28 @@ export default class Coordinator {
         //for treeant
         this.previous_parent_node = false;
 
-        let config = {
+        this.config = {
 
-            container: "#collapsable-tree"
+            container: "#collapsable-tree",
+            rootOrientation: "NORTH",
+            animateOnInit: true,
+
+            node: {
+                collapsable: true
+            },
+            animation: {
+                nodeAnimation: "easeOutBounce",
+                nodeSpeed: 700,
+                connectorsAnimation: "bounce",
+                connectorsSpeed: 700
+            }
         };
 
         //treeant config is a list
-        this.treeant_config = [config];
+        this.treeant_config = [this.config];
         this.treeant_record = new Map();
+        this.move_chain_str=[];
 
-        //modify tree var 
-        this.tree = chart_config = {
-            chart: {
-                container: "#collapsable-tree",
-
-                animateOnInit: true,
-
-                node: {
-                    collapsable: true
-                },
-                animation: {
-                    nodeAnimation: "easeOutBounce",
-                    nodeSpeed: 700,
-                    connectorsAnimation: "bounce",
-                    connectorsSpeed: 700
-                }
-            },
-            nodeStructure: {
-                image: "img/pieces/king_white.png",
-                children: [
-                    {
-                        image: "img/lana.png",
-                        collapsed: true,
-                        children: [
-                            {
-                                image: "img/figgs.png"
-                            }
-                        ]
-                    },
-
-                ]
-            }
-        };
 
         this.stockfishEnabled = stockfishEnabled;
         const stockFishSlider = document.getElementById("stockfish_is_enabled");
@@ -386,12 +366,19 @@ export default class Coordinator {
         if (this.previous_parent_node) {
             let move_as_alg = move.getMoveAlgebraic();
             let alg_route = this.algebraic_string_game;
+
+            console.log(alg_route)
+            console.log(this.treeant_record)
+
             parent_node = this.treeant_record.get(this.algebraic_string_game);
+            parent_node['children'] = [];
         }
         //if treeant has yet to declare a parent node 
         else {
             parent_node = {
-                text: { name: move_title },
+                text: { name: move.getMoveAlgebraic() },
+                color:"#FFFFFF",
+                children: []
             };
             this.treeant_config.push(parent_node);
             this.previous_parent_node = true;
@@ -399,16 +386,26 @@ export default class Coordinator {
 
         //const parent_move_img = convertAlgebraicMoveToPieceMoved(move_alg, move.getPiece().getColor());
 
+
         //create nodes for hypothetical moves
         for (let i = 0; i < list_moves.length; i++) {
             let split = list_moves[i].split("-");
 
+            //sometimes wikibook uses "·" to divide entries 
+            if (split.length <= 1) {
+                let re_split = list_moves[i].split("·");
+                if (re_split.length > 1) {
+                    split = re_split;
+                }
+            }
+
             //get corresponding image, parse based on color of the move
 
             let new_node = {
-                parent: parent_node,
-                text: { name: list_moves[i] }
+                text: { name: list_moves[i], color:"#FFFFFF" },
             }
+            parent_node['children'].push(new_node)
+
 
             let move_as_alg;
             let alg_route = this.algebraic_string_game;
@@ -421,8 +418,8 @@ export default class Coordinator {
                 piece_moved = convertAlgebraicMoveToPieceMoved(move_as_alg, "black");
             }
             else {
-                move_as_alg = (split[0].slice(3, split[0].length));
-                alg_route = alg_route + String(move.getCount() + 1) + "." + move_as_alg;
+                move_as_alg = (split[0].slice(3, split[0].length - 1));
+                alg_route = alg_route + String(move.getCount() + 1) + ". " + move_as_alg;
                 piece_moved = convertAlgebraicMoveToPieceMoved(move_as_alg, "white");
             }
 
@@ -431,6 +428,8 @@ export default class Coordinator {
             this.treeant_config.push(new_node);
         }
 
+        // console.log(this.treeant_config)
+        console.log(parent_node)
         //update tree 
         this.tree = new Treant(this.treeant_config);
 
@@ -516,8 +515,10 @@ export default class Coordinator {
             let top_n_paragraphs = []
             //first entry is always FEN of position, want to avoid actively
             for (let i = 1; i < Math.min(n + 1, all_p_tags.length); i++) {
-                top_n_paragraphs.push(all_p_tags[i].textContent);
+                top_n_paragraphs.push(all_p_tags[i].textContent+"\n");
             }
+
+            console.log(top_n_paragraphs)
 
             //need to get header tag also 
             let header_text = parsedPageAsDocument.getElementsByTagName("h2")[0].textContent;

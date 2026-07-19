@@ -10,20 +10,15 @@ import RoundDisplay from "/round_display/round_display_graphics.js";
 
 
 function main() {
-        let cherryDark = "";
-        //let cherryDark = [228, 150, 192];
-        let cherryLight = [255, 255, 255];
-        let cherryHighlightLight = [149, 117, 209];
-        let cherryHighlightDark = [212, 40, 200];
 
-        let normalDark = [209, 139, 71];
-        let normalLight = [255, 206, 158];
+        let normalDark = [171, 128, 211];
+        let normalLight = [240, 234, 229];
         let normalHighLightLight = [130, 151, 105];
         let normalHighLightDark = [100, 111, 64];
 
         let newChessBoard = new ChessBoard();
         let boardGraphicsManager = new BoardGraphicsManager(newChessBoard, normalDark, normalLight, normalHighLightLight, normalHighLightDark);
-        //let boardGraphicsManager = new BoardGraphicsManager(newChessBoard,cherryDark,cherryLight,cherryHighlightLight,cherryHighlightDark);
+        // let boardGraphicsManager = new BoardGraphicsManager(newChessBoard,cherryDark,cherryLight,cherryHighlightLight,cherryHighlightDark);
         let roundManager = new RoundManager(newChessBoard);
         let roundDisplay = new RoundDisplay(roundManager);
 
@@ -59,7 +54,7 @@ function main() {
                         }
                 },
                 nodeStructure: {
-                        image: "images/pieces/king_white.png",
+                        image:"images/pieces/horse_white.png"
                 }
         };
 

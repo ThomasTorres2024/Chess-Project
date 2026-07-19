@@ -412,6 +412,8 @@ class BoardGraphicsManager {
             new_p_tag.textContent = message;
             new_p_tag.classList.add("wikibook_entry")
             wiki_section.append(new_p_tag);
+            // wiki_section.append(document.createElement('br'));
+            // wiki_section.append(document.createElement('br'));
         }
 
     }

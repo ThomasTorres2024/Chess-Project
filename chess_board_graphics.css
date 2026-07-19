@@ -1,7 +1,11 @@
 #all {
-  background: linear-gradient(#e66465, #9198e5);
+  background: linear-gradient(#978ae0, #d1d1e7); 
+  /* background: rgba(26, 25, 25, 0.2);  */
   background-repeat: no-repeat;
   background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 body {
@@ -28,6 +32,7 @@ body {
 
 #navbar_container {
   text-align: center;
+  margin-bottom: 50px;
 }
 
 #navbar li {
@@ -70,7 +75,6 @@ body {
 
 #right_side {
   margin-top: 1.5%;
-  margin-left: 2%;
   display: flex;
   flex-direction: row;
 
@@ -103,7 +107,7 @@ body {
 #round_record h4 {
   color: white;
   font-family: 'Lucida Console';
-  font-size: 13px;
+  font-size: 30px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -285,6 +289,9 @@ input:checked+.slider:before {
   width: 90%;
   margin-left: 5%;
   margin-right: 5%;
+  margin-top: 20px;
+  gap: 10px;
+  margin-bottom: 5px;
 }
 
 #Wikibook_Label {
@@ -292,11 +299,11 @@ input:checked+.slider:before {
   display: flex;
   justify-content: center;
   width: calc(100% / 3);
-  height: 30px;
+  height: 50px;
 
   color: white;
   font-family: 'Lucida Console';
-  font-size: 14px;
+  font-size: 19px;
 }
 
 .Wikibook_Header {
@@ -317,7 +324,7 @@ input:checked+.slider:before {
 
 .wikibook_entry {
   color: white;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Lucida Console';
   font-size: 12px;
   white-space: normal;
   overflow-wrap: break-word;
@@ -348,7 +355,6 @@ input:checked+.slider:before {
   flex-direction: column;
   border-style: double;
   border-radius: 3;
-  margin-left: 5%;
   margin-top: 1.5%;
   border-color: white;
   height: 450px;
@@ -372,7 +378,7 @@ input:checked+.slider:before {
 }
 
 .fen_pgn_display{
-  background:rgb(0 0 90 / 30%);
+  background:rgb(0 0 90 / 15%);
   color: white;
   resize: none;
   border: none;
@@ -393,10 +399,10 @@ input:checked+.slider:before {
 }
 
 #middle_part {
-  position: absolute;
   display: flex;
   top: 100px;
-  right: 411px;
+  width: 1200px;
+  right: 0px;
 }
 
 #navbar a {
@@ -407,6 +413,7 @@ input:checked+.slider:before {
   text-align: center;
   padding-right: 10px;
   padding-left: 10px;
+  font-size: 20px;
 }
 
 #navbar ul {
@@ -435,7 +442,7 @@ input:checked+.slider:before {
 }
 
 #A1 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -444,7 +451,7 @@ input:checked+.slider:before {
 }
 
 #A2 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -453,7 +460,7 @@ input:checked+.slider:before {
 }
 
 #A3 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -462,7 +469,7 @@ input:checked+.slider:before {
 }
 
 #A4 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -471,7 +478,7 @@ input:checked+.slider:before {
 }
 
 #A5 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -480,7 +487,7 @@ input:checked+.slider:before {
 }
 
 #A6 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -489,7 +496,7 @@ input:checked+.slider:before {
 }
 
 #A7 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -498,7 +505,7 @@ input:checked+.slider:before {
 }
 
 #A8 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -507,7 +514,7 @@ input:checked+.slider:before {
 }
 
 #B1 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -516,7 +523,7 @@ input:checked+.slider:before {
 }
 
 #B2 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -525,7 +532,7 @@ input:checked+.slider:before {
 }
 
 #B3 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -534,7 +541,7 @@ input:checked+.slider:before {
 }
 
 #B4 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -543,7 +550,7 @@ input:checked+.slider:before {
 }
 
 #B5 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -552,7 +559,7 @@ input:checked+.slider:before {
 }
 
 #B6 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -561,7 +568,7 @@ input:checked+.slider:before {
 }
 
 #B7 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -570,7 +577,7 @@ input:checked+.slider:before {
 }
 
 #B8 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -579,7 +586,7 @@ input:checked+.slider:before {
 }
 
 #C1 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -588,7 +595,7 @@ input:checked+.slider:before {
 }
 
 #C2 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -597,7 +604,7 @@ input:checked+.slider:before {
 }
 
 #C3 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -606,7 +613,7 @@ input:checked+.slider:before {
 }
 
 #C4 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -615,7 +622,7 @@ input:checked+.slider:before {
 }
 
 #C5 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -624,7 +631,7 @@ input:checked+.slider:before {
 }
 
 #C6 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -633,7 +640,7 @@ input:checked+.slider:before {
 }
 
 #C7 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -642,7 +649,7 @@ input:checked+.slider:before {
 }
 
 #C8 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -651,7 +658,7 @@ input:checked+.slider:before {
 }
 
 #D1 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -660,7 +667,7 @@ input:checked+.slider:before {
 }
 
 #D2 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -669,7 +676,7 @@ input:checked+.slider:before {
 }
 
 #D3 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -678,7 +685,7 @@ input:checked+.slider:before {
 }
 
 #D4 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -687,7 +694,7 @@ input:checked+.slider:before {
 }
 
 #D5 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -696,7 +703,7 @@ input:checked+.slider:before {
 }
 
 #D6 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -705,7 +712,7 @@ input:checked+.slider:before {
 }
 
 #D7 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -714,7 +721,7 @@ input:checked+.slider:before {
 }
 
 #D8 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -723,7 +730,7 @@ input:checked+.slider:before {
 }
 
 #E1 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -732,7 +739,7 @@ input:checked+.slider:before {
 }
 
 #E2 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -741,7 +748,7 @@ input:checked+.slider:before {
 }
 
 #E3 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -750,7 +757,7 @@ input:checked+.slider:before {
 }
 
 #E4 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -759,7 +766,7 @@ input:checked+.slider:before {
 }
 
 #E5 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -768,7 +775,7 @@ input:checked+.slider:before {
 }
 
 #E6 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -777,7 +784,7 @@ input:checked+.slider:before {
 }
 
 #E7 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -786,7 +793,7 @@ input:checked+.slider:before {
 }
 
 #E8 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -795,7 +802,7 @@ input:checked+.slider:before {
 }
 
 #F1 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -804,7 +811,7 @@ input:checked+.slider:before {
 }
 
 #F2 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -813,7 +820,7 @@ input:checked+.slider:before {
 }
 
 #F3 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -822,7 +829,7 @@ input:checked+.slider:before {
 }
 
 #F4 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -831,7 +838,7 @@ input:checked+.slider:before {
 }
 
 #F5 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -840,7 +847,7 @@ input:checked+.slider:before {
 }
 
 #F6 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -849,7 +856,7 @@ input:checked+.slider:before {
 }
 
 #F7 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -858,7 +865,7 @@ input:checked+.slider:before {
 }
 
 #F8 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -867,7 +874,7 @@ input:checked+.slider:before {
 }
 
 #G1 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -876,7 +883,7 @@ input:checked+.slider:before {
 }
 
 #G2 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -885,7 +892,7 @@ input:checked+.slider:before {
 }
 
 #G3 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -894,7 +901,7 @@ input:checked+.slider:before {
 }
 
 #G4 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -903,7 +910,7 @@ input:checked+.slider:before {
 }
 
 #G5 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -912,7 +919,7 @@ input:checked+.slider:before {
 }
 
 #G6 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -921,7 +928,7 @@ input:checked+.slider:before {
 }
 
 #G7 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -930,7 +937,7 @@ input:checked+.slider:before {
 }
 
 #G8 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -939,7 +946,7 @@ input:checked+.slider:before {
 }
 
 #H1 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -948,7 +955,7 @@ input:checked+.slider:before {
 }
 
 #H2 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -957,7 +964,7 @@ input:checked+.slider:before {
 }
 
 #H3 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -966,7 +973,7 @@ input:checked+.slider:before {
 }
 
 #H4 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -975,7 +982,7 @@ input:checked+.slider:before {
 }
 
 #H5 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -984,7 +991,7 @@ input:checked+.slider:before {
 }
 
 #H6 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -993,7 +1000,7 @@ input:checked+.slider:before {
 }
 
 #H7 {
-  background-color: rgb(255, 206, 158);
+  background-color: rgb(240, 234, 229);
   height: 60px;
   width: 60px;
   position: absolute;
@@ -1002,7 +1009,7 @@ input:checked+.slider:before {
 }
 
 #H8 {
-  background-color: rgb(209, 139, 71);
+  background-color: rgb(171, 128, 211);
   height: 60px;
   width: 60px;
   position: absolute;
